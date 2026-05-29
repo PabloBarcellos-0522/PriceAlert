@@ -1,0 +1,35 @@
+{% extends 'main/base.html' %} {% block content %}
+
+<div class="columns is-vcentered">
+  <div class="column">
+    <h1 class="title is-1">Monitore preços automaticamente</h1>
+
+    <p class="subtitle">Pesquise produtos, acompanhe quedas e receba alertas.</p>
+
+    <div class="field has-addons">
+      <div class="control is-expanded">
+        <input class="input is-medium" placeholder="Pesquisar produto" />
+      </div>
+
+      <div class="control">
+        <button class="button is-primary is-medium">Pesquisar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="column">
+    <div class="box">
+      <h3 class="title is-4">📊 Histórico</h3>
+
+      <p>Veja tendências de preços</p>
+    </div>
+
+    <div class="box">
+      <h3 class="title is-4">📧 Alertas</h3>
+
+      <p>Receba emails</p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

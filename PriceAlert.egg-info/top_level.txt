@@ -1,0 +1,7 @@
+instance
+price
+static
+staticExemple
+templates
+templatesExemple
+venv

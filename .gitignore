@@ -1,0 +1,82 @@
+# Ignorar arquivos gerados pelo Python
+__pycache__/
+*.py[cod]
+*.swp
+
+# Ignorar arquivos de build
+build/
+dist/
+
+# Ignorar arquivos de depuração
+*.pyc
+*.pyo
+
+# Ignorar arquivos de logs
+*.log
+
+# Ignorar arquivos de configuração
+.env
+.env.local
+.env.*.local
+.env.development
+.env.dev
+.env.prod
+.env.test
+.env.production
+
+# Ignorar arquivos de dependências
+node_modules/
+vendor/
+
+# Ignorar arquivos de banco de dados
+*.db
+*.sqlite
+
+# Ignorar arquivos de cache
+.cache/
+.cache_*
+
+# Ignorar arquivos de código-fonte gerados
+**/migrations/
+**/staticfiles/
+
+# Ignorar arquivos de testes
+**/tests/
+**/__tests__/
+*.spec.py
+*.test.py
+
+# Ignorar arquivos de build do pip
+__pypackages__/
+.pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Ignorar arquivos de build do setuptools
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Ignorar arquivos de build do pipenv
+Pipfile.lock
+
+# Ignorar arquivos de build do poetry
+poetry.lock
+
+# Ignorar arquivos de build do flit
+flit.meta
+
+venv

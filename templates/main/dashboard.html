@@ -1,0 +1,67 @@
+{% extends 'main/base.html' %} {% block content %}
+
+<div class="columns">
+  <div class="column is-3">
+    <aside class="menu">
+      <p class="menu-label">Painel</p>
+
+      <ul class="menu-list">
+        <li>
+          <a> Dashboard </a>
+        </li>
+
+        <li>
+          <a href="/search"> Buscar Produtos </a>
+        </li>
+
+        <li>
+          <a href="/monitored"> Monitorados </a>
+        </li>
+      </ul>
+    </aside>
+  </div>
+
+  <div class="column">
+    <div class="columns">
+      <div class="column">
+        <div class="box">
+          <h3 class="title is-5">Produtos</h3>
+
+          25
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="box">
+          Economia
+
+          <br />
+
+          R$523
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="box">
+          Alertas
+
+          <br />
+
+          5
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h2 class="title">Últimas quedas</h2>
+
+      RTX 4060
+
+      <br />
+
+      1899 → 1699
+    </div>
+  </div>
+</div>
+
+{% endblock %}

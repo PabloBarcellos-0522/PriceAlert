@@ -1,0 +1,50 @@
+Metadata-Version: 2.4
+Name: PriceAlert
+Version: 0.1.0
+Summary: plataforma web que permite aos usuários monitorar preços de produtos em diferentes plataformas de e-commerce e receber notificações quando esses preços atingirem valores desejados
+Author-email: Pablo Barcellos <pablobarcellossoares@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2026 Pablo Barcellos Soares
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+        
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: Flask
+Requires-Dist: dotenv
+Requires-Dist: flask-wtf
+Requires-Dist: email-validator
+Requires-Dist: flask-sqlalchemy
+Requires-Dist: flask-admin
+Requires-Dist: psycopg[binary]
+Provides-Extra: dev
+Requires-Dist: ipython; extra == "dev"
+Requires-Dist: flask-shell-ipython; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Requires-Dist: flake8; extra == "dev"
+Requires-Dist: flask-debugtoolbar>=0.15; extra == "dev"
+Provides-Extra: test
+Requires-Dist: pytest>=8.3; extra == "test"
+Requires-Dist: pytest-cov>=5.0; extra == "test"
+Requires-Dist: pytest-flask; extra == "test"
+Dynamic: license-file
+
+# PriceAlert

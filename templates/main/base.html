@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+
+    <title>PriceAlert</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css" />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',
+        filename='css/style.css') }}"
+    />
+  </head>
+
+  <body>
+    <nav class="navbar is-white">
+      <div class="navbar-brand">
+        <a class="navbar-item">
+          <strong class="is-size-4"> 📈 PriceAlert </strong>
+        </a>
+      </div>
+
+      <div class="navbar-menu">
+        <div class="navbar-end">
+          <a class="navbar-item"> Dashboard </a>
+
+          <a class="navbar-item"> Buscar </a>
+
+          <a class="navbar-item"> Alertas </a>
+        </div>
+      </div>
+    </nav>
+
+    <section class="section">{% block content %} {% endblock %}</section>
+  </body>
+</html>
