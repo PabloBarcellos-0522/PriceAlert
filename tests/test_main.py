@@ -1,5 +1,5 @@
 import pytest
-from delivery import create_app
+from price import create_app
 
 
 # =============================================================================
@@ -68,9 +68,10 @@ def test_non_existent_route_returns_404(client):
 # -----------------------------------------------------------------------------
 
 PUBLIC_ROUTES = [
-    ("/",         True),
-    ("/contato",  True),
-    ("/carrinho", True),
+    ("/",          True),
+    ("/dashboard", True),
+    ("/search",    True),
+    ("/monitored", True),
 ]
 
 
@@ -90,11 +91,11 @@ def test_public_routes_return_200_in_html(client, route, check_doctype):
 
     assert (
         b"<html" in response.data or
-        b"<!DOCTYPE html>" in response.data
+        b"<!doctype html>" in response.data
     ), f"Rota {route} nao parece retornar HTML"
 
     if check_doctype:
-        assert b"<!DOCTYPE html>" in response.data, \
+        assert b"<!doctype html>" in response.data, \
             f"Rota {route} deveria conter DOCTYPE html"
 
 
@@ -108,28 +109,28 @@ def test_index_page(client):
     """
     response = client.get('/')
     assert response.status_code == 200
-    assert b"Delivery UVV" in response.data
+    assert b"PriceAlert" in response.data
 
 
 # =============================================================================
 # TESTES DE FORMULARIO
 # =============================================================================
 
-def test_contato_form(client):
-    """
-    Testa o fluxo completo de envio de formulario valido:
-    - POST com dados corretos
-    - espera redirecionamento (302)
-    """
-    response = client.post(
-        '/contato',
-        data={
-            "nome": "Teste Aluno",
-            "email": "teste@uvv.com",
-            "mensagem": "Mensagem de teste para validacao",
-            "submit": "Enviar Mensagem"
-        },
-        content_type="application/x-www-form-urlencoded"
-    )
+# def test_contato_form(client):
+#     """
+#     Testa o fluxo completo de envio de formulario valido:
+#     - POST com dados corretos
+#     - espera redirecionamento (302)
+#     """
+#     response = client.post(
+#         '/contato',
+#         data={
+#             "nome": "Teste Aluno",
+#             "email": "teste@uvv.com",
+#             "mensagem": "Mensagem de teste para validacao",
+#             "submit": "Enviar Mensagem"
+#         },
+#         content_type="application/x-www-form-urlencoded"
+#     )
 
-    assert response.status_code == 302  # redirect apos sucesso
+#     assert response.status_code == 302  # redirect apos sucesso
