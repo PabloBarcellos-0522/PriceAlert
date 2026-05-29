@@ -27,7 +27,7 @@ def load_env(env: str):
 # ==========================================================
 
 # .\venv\Scripts\activate para acessar o venv
-# source ./venv/bin/activate para linux
+# source ./venv/Scripts/activate para linux
 # invoke install para iniciar
 @task
 def install(c, dev=True):
@@ -105,7 +105,7 @@ def format(c):
 @task
 def create_db(c):
     """
-    Executa o comando de seed garantindo o ambiente de desenvolvimento.
+    Executa o comando de create_db
     """
     load_env("dev")
     c.run("flask create-db")
@@ -118,6 +118,15 @@ def seed_dev(c):
     """
     load_env("dev")
     c.run("flask seed-dev")
+
+
+@task
+def drop_db(c):
+    """
+    Executa o comando de drop_db garantindo o ambiente de desenvolvimento.
+    """
+    load_env("dev")
+    c.run("flask drop-db")
 
 # ==========================================================
 # EMPACOTAMENTO

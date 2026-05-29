@@ -3,7 +3,8 @@ from price.ext.db import db
 from price.models import *
 
 from price.ext.cli.security import (
-    ensure_safe_seed_environment
+    ensure_safe_seed_environment,
+    ensure_safe_drop_environment
 )
 from price.models.category import Category
 from price.models.notification import Notification
@@ -42,6 +43,7 @@ def init_app(app):
         prompt="Apagar banco inteiro?"
     )
     def drop_db():
+        ensure_safe_drop_environment()
 
         db.drop_all()
 

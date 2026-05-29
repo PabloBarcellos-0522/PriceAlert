@@ -10,6 +10,7 @@ def init_app(app):
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
     app.config['DEBUG'] = os.environ.get('FLASK_DEBUG') == '1'
     app.config['ALLOW_SEED'] = os.environ.get('ALLOW_SEED') == 'True'
+    app.config['ALLOW_DROP'] = os.environ.get('ALLOW_DROP') == 'True'
 
     app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER')
     app.config['MAIL_PORT'] = os.environ.get('MAIL_PORT')
