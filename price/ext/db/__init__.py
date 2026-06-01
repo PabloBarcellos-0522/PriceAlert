@@ -30,9 +30,8 @@ def register_models():
     import price.models.user
     import price.models.offer
     import price.models.product
-    import price.models.category
     import price.models.price_history
-    import price.models.user_monitoring
+    import price.models.product_monitoring
     import price.models.notification
 
     pass

@@ -1,11 +1,10 @@
-from typing import List, Optional, TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import func
 from price.ext.db import db
 
 if TYPE_CHECKING:
-    from .user_monitoring import UserMonitoring
+    from .product_monitoring import ProductMonitoring
     from .notification import Notification
 
 
@@ -18,33 +17,19 @@ class User(db.Model):
     )
 
     name: Mapped[str] = mapped_column(
-        db.String(100),
-        index=True
+        db.String(255),
+        nullable=False
     )
 
     email: Mapped[str] = mapped_column(
-        db.String(100),
-        unique=True,
+        db.String(255),
+        nullable=False,
         index=True
     )
 
     password: Mapped[str] = mapped_column(
-        db.String(255)
-    )
-
-    receive_email: Mapped[bool] = mapped_column(
-        db.Boolean,
-        default=True
-    )
-
-    receive_whatsapp: Mapped[bool] = mapped_column(
-        db.Boolean,
-        default=False
-    )
-
-    created_at: Mapped[datetime] = mapped_column(
-        db.DateTime(timezone=True),
-        server_default=func.now()
+        db.String(255),
+        nullable=False
     )
 
     is_active: Mapped[bool] = mapped_column(
@@ -53,8 +38,18 @@ class User(db.Model):
         nullable=False
     )
 
-    monitorings: Mapped[List["UserMonitoring"]] = relationship(
-        "UserMonitoring",
+    created_at: Mapped[datetime] = mapped_column(
+        db.DateTime,
+        nullable=False
+    )
+
+    updated_at: Mapped[datetime] = mapped_column(
+        db.DateTime,
+        nullable=False
+    )
+
+    monitorings: Mapped[List["ProductMonitoring"]] = relationship(
+        "ProductMonitoring",
         back_populates="user",
         cascade="all, delete-orphan"
     )

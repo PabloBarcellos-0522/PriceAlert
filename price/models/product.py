@@ -1,13 +1,12 @@
 from typing import List, TYPE_CHECKING
 from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, func
 from price.ext.db import db
 
 if TYPE_CHECKING:
     from .offer import Offer
-    from .category import Category
-    from .user_monitoring import UserMonitoring
+    from .product_monitoring import ProductMonitoring
+    from .notification import Notification
 
 
 class Product(db.Model):
@@ -18,23 +17,46 @@ class Product(db.Model):
         primary_key=True
     )
 
-    canonical_name: Mapped[str] = mapped_column(
-        db.String(150),
+    google_product_id: Mapped[str] = mapped_column(
+        db.String(255),
+        nullable=False,
         index=True
     )
 
-    category_id: Mapped[int] = mapped_column(
-        ForeignKey("categories.id")
+    title: Mapped[str] = mapped_column(
+        db.String(255),
+        nullable=False,
+        index=True
+    )
+
+    brand: Mapped[str] = mapped_column(
+        db.String(255),
+        nullable=False
+    )
+
+    product_token: Mapped[str] = mapped_column(
+        db.Text,
+        nullable=False
+    )
+
+    product_shoping_link: Mapped[str] = mapped_column(
+        db.Text,
+        nullable=False
+    )
+
+    image: Mapped[str] = mapped_column(
+        db.Text,
+        nullable=False
     )
 
     created_at: Mapped[datetime] = mapped_column(
-        db.DateTime(timezone=True),
-        server_default=func.now()
+        db.DateTime,
+        nullable=False
     )
 
-    category: Mapped["Category"] = relationship(
-        "Category",
-        back_populates="products"
+    updated_at: Mapped[datetime] = mapped_column(
+        db.DateTime,
+        nullable=False
     )
 
     offers: Mapped[List["Offer"]] = relationship(
@@ -43,7 +65,14 @@ class Product(db.Model):
         cascade="all, delete-orphan"
     )
 
-    monitorings: Mapped[List["UserMonitoring"]] = relationship(
-        "UserMonitoring",
-        back_populates="product"
+    monitorings: Mapped[List["ProductMonitoring"]] = relationship(
+        "ProductMonitoring",
+        back_populates="product",
+        cascade="all, delete-orphan"
+    )
+
+    notifications: Mapped[List["Notification"]] = relationship(
+        "Notification",
+        back_populates="product",
+        cascade="all, delete-orphan"
     )

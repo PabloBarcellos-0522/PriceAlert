@@ -1,18 +1,18 @@
 import click
+from datetime import datetime
+from decimal import Decimal
 from price.ext.db import db
-from price.models import *
 
 from price.ext.cli.security import (
     ensure_safe_seed_environment,
     ensure_safe_drop_environment
 )
-from price.models.category import Category
 from price.models.notification import Notification
 from price.models.offer import Offer
 from price.models.price_history import PriceHistory
 from price.models.product import Product
 from price.models.user import User
-from price.models.user_monitoring import UserMonitoring
+from price.models.product_monitoring import ProductMonitoring
 
 
 # ======================================
@@ -85,42 +85,6 @@ def init_app(app):
             )
 
             # ==========================
-            # CATEGORIAS
-            # ==========================
-            categories_data = [
-                ("Hardware", "cpu"),
-                ("Celulares", "mobile"),
-                ("Games", "gamepad"),
-                ("Casa", "house"),
-                ("Informática", "desktop")
-            ]
-
-            categories = {}
-
-            for name, icon in categories_data:
-
-                category = (
-                    Category.query
-                    .filter_by(name=name)
-                    .first()
-                )
-
-                if not category:
-
-                    category = Category(
-                        name=name,
-                        icon=icon
-                    )
-
-                    db.session.add(
-                        category
-                    )
-
-                categories[name] = category
-
-            db.session.flush()
-
-            # ==========================
             # USER DEMO
             # ==========================
             user = User.query.filter_by(
@@ -132,7 +96,9 @@ def init_app(app):
                 user = User(
                     name="Pablo",
                     email="pablo@pricealert.dev",
-                    password="123"
+                    password="123",
+                    created_at=datetime.utcnow(),
+                    updated_at=datetime.utcnow()
                 )
 
                 db.session.add(
@@ -145,27 +111,36 @@ def init_app(app):
             # PRODUTOS
             # ==========================
             rtx = Product(
-                canonical_name="RTX 4060",
-
-                category=categories[
-                    "Hardware"
-                ]
+                google_product_id="g1",
+                title="RTX 4060",
+                brand="ASUS",
+                product_token="token_rtx",
+                product_shoping_link="https://shopping.google.com/rtx4060",
+                image="https://example.com/rtx-4060.jpg",
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow()
             )
 
             ps5 = Product(
-                canonical_name="PS5 Slim",
-
-                category=categories[
-                    "Games"
-                ]
+                google_product_id="g2",
+                title="PS5 Slim",
+                brand="Sony",
+                product_token="token_ps5",
+                product_shoping_link="https://shopping.google.com/ps5",
+                image="https://example.com/ps5-slim.jpg",
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow()
             )
 
             iphone = Product(
-                canonical_name="iPhone 13",
-
-                category=categories[
-                    "Celulares"
-                ]
+                google_product_id="g3",
+                title="iPhone 13",
+                brand="Apple",
+                product_token="token_iphone",
+                product_shoping_link="https://shopping.google.com/iphone13",
+                image="https://example.com/iphone13.jpg",
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow()
             )
 
             db.session.add_all([
@@ -180,39 +155,27 @@ def init_app(app):
             # OFFERS
             # ==========================
             offer1 = Offer(
-
                 product=rtx,
-
-                external_id="MLB123",
-
-                source="MercadoLivre",
-
-                title="RTX 4060 ASUS Dual",
-
-                price=1899,
-
-                url="https://...",
-
-                image_url="https://example.com/rtx-4060.jpg"
-
+                merchant="MercadoLivre",
+                product_url="https://mercadolivre.com.br/rtx4060",
+                affiliate_url="https://mercadolivre.com.br/rtx4060?ref=123",
+                current_price=Decimal("1899.00"),
+                shipping_price=Decimal("0.00"),
+                rating=5,
+                reviews_count=42,
+                last_seen_at=datetime.utcnow()
             )
 
             offer2 = Offer(
-
                 product=ps5,
-
-                external_id="MLB456",
-
-                source="MercadoLivre",
-
-                title="PS5 Slim",
-
-                price=3199,
-
-                url="https://...",
-
-                image_url="https://example.com/ps5-slim.jpg"
-
+                merchant="MercadoLivre",
+                product_url="https://mercadolivre.com.br/ps5",
+                affiliate_url=None,
+                current_price=Decimal("3199.00"),
+                shipping_price=Decimal("25.00"),
+                rating=4,
+                reviews_count=150,
+                last_seen_at=datetime.utcnow()
             )
 
             db.session.add_all([
@@ -229,17 +192,20 @@ def init_app(app):
 
                 PriceHistory(
                     offer=offer1,
-                    price=1999
+                    price=Decimal("1999.00"),
+                    captured_at=datetime.utcnow()
                 ),
 
                 PriceHistory(
                     offer=offer1,
-                    price=1899
+                    price=Decimal("1899.00"),
+                    captured_at=datetime.utcnow()
                 ),
 
                 PriceHistory(
                     offer=offer2,
-                    price=3499
+                    price=Decimal("3499.00"),
+                    captured_at=datetime.utcnow()
                 )
 
             ])
@@ -247,22 +213,24 @@ def init_app(app):
             # ==========================
             # MONITORAMENTO
             # ==========================
-            monitor1 = UserMonitoring(
-
+            monitor1 = ProductMonitoring(
                 user=user,
-
                 product=rtx,
-
-                desired_price=1700
+                desired_price=Decimal("1700.00"),
+                last_notified_price=None,
+                notify_only_lowest_price=False,
+                is_active=True,
+                created_at=datetime.utcnow()
             )
 
-            monitor2 = UserMonitoring(
-
+            monitor2 = ProductMonitoring(
                 user=user,
-
                 product=ps5,
-
-                desired_price=3000
+                desired_price=Decimal("3000.00"),
+                last_notified_price=None,
+                notify_only_lowest_price=True,
+                is_active=True,
+                created_at=datetime.utcnow()
             )
 
             db.session.add_all([
@@ -274,14 +242,11 @@ def init_app(app):
             # ALERTAS
             # ==========================
             notification = Notification(
-
                 user=user,
-
+                product=rtx,
                 title="Preço caiu",
-
                 message="RTX 4060 caiu para R$1899",
-
-                sent=True
+                sent_at=datetime.utcnow()
             )
 
             db.session.add(
