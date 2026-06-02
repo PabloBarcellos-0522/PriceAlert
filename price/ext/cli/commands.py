@@ -97,8 +97,6 @@ def init_app(app):
                     name="Pablo",
                     email="pablo@pricealert.dev",
                     password="123",
-                    # created_at=datetime.utcnow(),
-                    # updated_at=datetime.utcnow()
                 )
 
                 db.session.add(
@@ -116,8 +114,6 @@ def init_app(app):
                 product_token="token_rtx",
                 product_shoping_link="https://shopping.google.com/rtx4060",
                 image="https://example.com/rtx-4060.jpg",
-                # created_at=datetime.utcnow(),
-                # updated_at=datetime.utcnow()
             )
 
             ps5 = Product(
@@ -127,8 +123,6 @@ def init_app(app):
                 product_token="token_ps5",
                 product_shoping_link="https://shopping.google.com/ps5",
                 image="https://example.com/ps5-slim.jpg",
-                # created_at=datetime.utcnow(),
-                # updated_at=datetime.utcnow()
             )
 
             iphone = Product(
@@ -138,8 +132,6 @@ def init_app(app):
                 product_token="token_iphone",
                 product_shoping_link="https://shopping.google.com/iphone13",
                 image="https://example.com/iphone13.jpg",
-                # created_at=datetime.utcnow(),
-                # updated_at=datetime.utcnow()
             )
 
             db.session.add_all([
@@ -162,7 +154,6 @@ def init_app(app):
                 shipping_price=Decimal("0.00"),
                 rating=5,
                 reviews_count=42,
-                # last_seen_at=datetime.utcnow()
             )
 
             offer2 = Offer(
@@ -174,7 +165,6 @@ def init_app(app):
                 shipping_price=Decimal("25.00"),
                 rating=4,
                 reviews_count=150,
-                # last_seen_at=datetime.utcnow()
             )
 
             db.session.add_all([
@@ -192,19 +182,16 @@ def init_app(app):
                 PriceHistory(
                     offer=offer1,
                     price=Decimal("1999.00"),
-                    # captured_at=datetime.utcnow()
                 ),
 
                 PriceHistory(
                     offer=offer1,
                     price=Decimal("1899.00"),
-                    # captured_at=datetime.utcnow()
                 ),
 
                 PriceHistory(
                     offer=offer2,
                     price=Decimal("3499.00"),
-                    # captured_at=datetime.utcnow()
                 )
 
             ])
@@ -216,10 +203,8 @@ def init_app(app):
                 user=user,
                 product=rtx,
                 desired_price=Decimal("1700.00"),
-                # last_notified_price=None,
                 notify_only_lowest_price=False,
                 is_active=True,
-                # created_at=datetime.utcnow()
             )
 
             monitor2 = ProductMonitoring(
@@ -229,7 +214,6 @@ def init_app(app):
                 last_notified_price=None,
                 notify_only_lowest_price=True,
                 is_active=True,
-                # created_at=datetime.utcnow()
             )
 
             db.session.add_all([
@@ -245,7 +229,6 @@ def init_app(app):
                 product=rtx,
                 title="Preço caiu",
                 message="RTX 4060 caiu para R$1899",
-                # sent_at=datetime.utcnow()
             )
 
             db.session.add(

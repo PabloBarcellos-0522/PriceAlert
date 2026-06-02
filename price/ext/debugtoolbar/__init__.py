@@ -2,5 +2,6 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 toolbar = DebugToolbarExtension()
 
-def init_app(app):
+
+def init_toolbar(app):
     toolbar.init_app(app)
