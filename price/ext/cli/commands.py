@@ -1,5 +1,4 @@
 import click
-from datetime import datetime
 from decimal import Decimal
 from price.ext.db import db
 

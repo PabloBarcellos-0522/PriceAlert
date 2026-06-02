@@ -1,5 +1,4 @@
 from decimal import Decimal
-from datetime import datetime
 from price.ext.db import db
 from price.models.product import Product
 from price.models.user import User

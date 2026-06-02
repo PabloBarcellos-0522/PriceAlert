@@ -26,6 +26,7 @@ dependencies = [
     "flask-admin",
     "psycopg[binary]",
     "serpapi",
+    "Flask-Mail",
 ]
 
 

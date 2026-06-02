@@ -1,7 +1,6 @@
 import os
 import logging
 from logging.handlers import RotatingFileHandler
-from dotenv import load_dotenv
 from flask import Flask
 
 
@@ -65,5 +64,11 @@ def create_app(test_config=None):
     # ----------------------------------------------------------
     from price.views import init_site
     init_site(app)
+
+    # ----------------------------------------------------------
+    # Services (camada de negocio)
+    # ----------------------------------------------------------
+    from price.services import init_services
+    init_services(app)
 
     return app

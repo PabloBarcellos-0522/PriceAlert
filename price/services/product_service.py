@@ -1,23 +1,20 @@
 from decimal import Decimal
+from flask import current_app
 from typing import Optional
 from price.ext.db import db
 from price.models.product import Product
 from price.models.offer import Offer
 from price.models.price_history import PriceHistory
-from price.services.serpapi_service import SerpApiService
 
 
 class SerpapiProductService:
-
-    def __init__(self, serpapi_service: SerpApiService):
-        self.serpapi_service = serpapi_service
 
     def search(self, query: str, fetch_offers: bool = False, max_details: int = 5):
         """Busca produtos no Google Shopping e opcionalmente busca detalhes/offers.
 
         - fetch_offers: se True, chama `get_product_details` para até `max_details` produtos.
         """
-        results = self.serpapi_service.search(query)
+        results = current_app.serpapi_service.search(query)
 
         shopping_results = results.get("shopping_results", [])
         if not shopping_results:
@@ -74,7 +71,7 @@ class SerpapiProductService:
 
         Retorna um dict com os dados do SerpAPI e a lista de offers processadas.
         """
-        results = self.serpapi_service.get_product_details(
+        results = current_app.serpapi_service.get_product_details(
             page_token, next_page_token)
 
         product_info = results.get("product_results") or {}
