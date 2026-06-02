@@ -2,12 +2,13 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, func
 from price.ext.db import db
 
 
 class ProductMonitoring(db.Model):
     __tablename__ = "product_monitorings"
+    __table_args__ = {'extend_existing': True}
 
     id: Mapped[int] = mapped_column(
         db.Integer,
@@ -51,8 +52,9 @@ class ProductMonitoring(db.Model):
     )
 
     created_at: Mapped[datetime] = mapped_column(
-        db.DateTime,
-        nullable=False
+        db.DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now()
     )
 
     user = relationship(

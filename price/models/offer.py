@@ -2,7 +2,7 @@ from typing import List, Optional, TYPE_CHECKING
 from datetime import datetime
 from decimal import Decimal
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, func
 from price.ext.db import db
 
 if TYPE_CHECKING:
@@ -12,6 +12,7 @@ if TYPE_CHECKING:
 
 class Offer(db.Model):
     __tablename__ = "offers"
+    __table_args__ = {'extend_existing': True}
 
     id: Mapped[int] = mapped_column(
         db.Integer,
@@ -60,8 +61,9 @@ class Offer(db.Model):
     )
 
     last_seen_at: Mapped[datetime] = mapped_column(
-        db.DateTime,
-        nullable=False
+        db.DateTime(timezone=True),
+        nullable=True,
+        onupdate=func.now()
     )
 
     product: Mapped["Product"] = relationship(

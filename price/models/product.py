@@ -1,5 +1,6 @@
 from typing import List, TYPE_CHECKING
 from datetime import datetime
+from sqlalchemy import func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from price.ext.db import db
 
@@ -11,6 +12,7 @@ if TYPE_CHECKING:
 
 class Product(db.Model):
     __tablename__ = "products"
+    __table_args__ = {'extend_existing': True}
 
     id: Mapped[int] = mapped_column(
         db.Integer,
@@ -31,7 +33,7 @@ class Product(db.Model):
 
     brand: Mapped[str] = mapped_column(
         db.String(255),
-        nullable=False
+        nullable=True
     )
 
     product_token: Mapped[str] = mapped_column(
@@ -50,13 +52,15 @@ class Product(db.Model):
     )
 
     created_at: Mapped[datetime] = mapped_column(
-        db.DateTime,
-        nullable=False
+        db.DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now()
     )
 
     updated_at: Mapped[datetime] = mapped_column(
-        db.DateTime,
-        nullable=False
+        db.DateTime(timezone=True),
+        nullable=True,
+        onupdate=func.now()
     )
 
     offers: Mapped[List["Offer"]] = relationship(
