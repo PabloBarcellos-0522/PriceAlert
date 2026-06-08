@@ -1,29 +1,67 @@
-{% extends 'main/base.html' %} {% block content %}
+{% extends 'main/base.html' %}
 
-<h1 class="title">Monitorados</h1>
+{% block title %}Meus Alertas - Price Alert{% endblock %}
 
-<div class="box">
-  RTX 4060
+{% block content %}
+<div class="container py-5" style="width: 100%; max-width: 1344px; flex-grow: 1;">
+    
+    <div class="mb-5">
+        <h1 class="title is-3 has-text-dark mb-1">Produtos Monitorados</h1>
+        <p class="subtitle is-6 has-text-grey">Acompanhe e gerencie todos os itens que você configurou para receber alertas</p>
+    </div>
 
-  <br />
+    <div class="monitorados-lista">
+        {% if produtos_monitorados %}
+            <div class="is-flex is-flex-direction-column">
+                {% for item in produtos_monitorados %}
+                    <div class="box has-background-dark p-4 mb-4" style="border-radius: 8px; border: 1px solid #2f3542; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                        <div class="columns is-tablet is-vcentered">
+                            
+                            <div class="column is-narrow has-text-centered">
+                                <div class="has-background-white is-flex is-justify-content-center is-align-items-center" style="width: 90px; height: 90px; border-radius: 6px; margin: 0 auto; overflow: hidden; padding: 5px;">
+                                    <img src="{{ item.imagem_url | default('https://bulma.io/assets/images/placeholders/128x128.png') }}" alt="{{ item.nome }}" style="object-fit: contain; max-height: 100%;">
+                                </div>
+                            </div>
 
-  Desejado: R$1700
+                            <div class="column">
+                                <h3 class="title is-5 has-text-white mb-1" style="line-height: 1.3;">{{ item.nome }}</h3>
+                                <p class="subtitle is-6 has-text-grey-light mb-0">Loja: <span class="has-text-weight-semibold">{{ item.loja_nome }}</span></p>
+                            </div>
 
-  <br />
+                            <div class="column is-3-tablet">
+                                <div class="is-flex is-justify-content-space-between mb-1">
+                                    <span class="has-text-grey-light is-size-7">Preço Atual:</span>
+                                    <span class="has-text-white has-text-weight-bold is-size-6">R$ {{ item.preco_atual | round(2) }}</span>
+                                </div>
+                                <div class="is-flex is-justify-content-space-between">
+                                    <span class="has-text-grey-light is-size-7">Preço Alvo:</span>
+                                    <span class="has-text-warning has-text-weight-bold is-size-6">R$ {{ item.preco_alvo | round(2) }}</span>
+                                </div>
+                            </div>
 
-  Atual: R$1899
+                            <div class="column is-narrow has-text-centered-mobile">
+                                <form action="/monitorados/remover/{{ item.id }}" method="POST" style="display: inline;">
+                                    <button type="submit" class="button is-danger is-outlined is-small px-4">
+                                        <span>Remover</span>
+                                    </button>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="box has-background-dark has-text-centered py-6" style="border-radius: 8px; border: 1px solid #2f3542; min-height: 250px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <div class="mb-3">
+                    <span class="is-size-1">🔔</span>
+                </div>
+                <p class="has-text-white is-size-5 has-text-weight-semibold">Você não está monitorando nenhum produto</p>
+                <p class="is-size-7 has-text-grey-light mt-1 mb-4">Vá até a aba de busca para encontrar itens e começar a economizar.</p>
+                <a href="/search" class="button is-primary has-text-weight-bold">Buscar Produtos</a>
+            </div>
+        {% endif %}
+    </div>
+
 </div>
-
-<div class="box">
-  PS5
-
-  <br />
-
-  Desejado: R$3200
-
-  <br />
-
-  Atual: R$3100
-</div>
-
 {% endblock %}

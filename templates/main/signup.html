@@ -1,0 +1,85 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Cadastrar-se - Price Alert{% endblock %}
+
+{% block content %}
+<div class="columns is-centered is-vcentered" style="flex-grow: 1; margin-top: 1rem; margin-bottom: 2rem;">
+    <div class="column is-10-tablet is-6-desktop is-4-widescreen">
+
+        <div class="box has-background-dark p-6" style="border-radius: 8px; border: 1px solid #2f3542; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
+            
+            <div class="has-text-centered mb-5">
+                <h1 class="title is-3 has-text-white mb-2">Criar Conta</h1>
+                <p class="subtitle is-6 has-text-grey-light">Comece a monitorar preços e poupar dinheiro</p>
+            </div>
+
+            <form method="POST" action="/cadastro">
+                {{ form.csrf_token }}
+
+                <div class="field mb-4">
+                    <label class="label has-text-grey-light">{{ form.nome.label }}</label>
+                    <div class="control">
+                        {{ form.nome(class="input is-medium has-background-black has-text-white", style="border-color: #4a4a4a;", placeholder="Seu nome") }}
+                    </div>
+                    {% if form.nome.errors %}
+                        {% for error in form.nome.errors %}
+                            <p class="help is-danger mt-1">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="field mb-4">
+                    <label class="label has-text-grey-light">{{ form.email.label }}</label>
+                    <div class="control">
+                        {{ form.email(class="input is-medium has-background-black has-text-white", style="border-color: #4a4a4a;", placeholder="seu@email.com") }}
+                    </div>
+                    {% if form.email.errors %}
+                        {% for error in form.email.errors %}
+                            <p class="help is-danger mt-1">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="field mb-4">
+                    <label class="label has-text-grey-light">{{ form.senha.label }}</label>
+                    <div class="control">
+                        {{ form.senha(class="input is-medium has-background-black has-text-white", style="border-color: #4a4a4a;", placeholder="Crie uma senha") }}
+                    </div>
+                    {% if form.senha.errors %}
+                        {% for error in form.senha.errors %}
+                            <p class="help is-danger mt-1">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="field mb-5">
+                    <label class="label has-text-grey-light">{{ form.confirmar_senha.label }}</label>
+                    <div class="control">
+                        {{ form.confirmar_senha(class="input is-medium has-background-black has-text-white", style="border-color: #4a4a4a;", placeholder="Repita a senha") }}
+                    </div>
+                    {% if form.confirmar_senha.errors %}
+                        {% for error in form.confirmar_senha.errors %}
+                            <p class="help is-danger mt-1">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="field mt-5">
+                    <div class="control">
+                        {{ form.submit(class="button is-primary is-medium is-fullwidth has-text-weight-bold") }}
+                    </div>
+                </div>
+            </form>
+
+            <hr style="background-color: #2f3542; height: 1px; margin: 1.5rem 0;">
+            <div class="has-text-centered is-size-6">
+                <p class="has-text-grey-light">
+                    Já possui uma conta? 
+                    <a href="/login" class="has-text-primary has-text-weight-semibold" style="text-decoration: none;">Faça login</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

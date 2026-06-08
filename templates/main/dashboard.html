@@ -1,67 +1,92 @@
-{% extends 'main/base.html' %} {% block content %}
+{% extends 'main/base.html' %}
 
-<div class="columns">
-  <div class="column is-3">
-    <aside class="menu">
-      <p class="menu-label">Painel</p>
+{% block title %}Dashboard - Price Alert{% endblock %}
 
-      <ul class="menu-list">
-        <li>
-          <a> Dashboard </a>
-        </li>
+{% block content %}
+<div class="container py-5" style="width: 100%; max-width: 1344px; flex-grow: 1;">
+    
+    <div class="mb-5">
+        <h1 class="title is-3 has-text-dark mb-1">Dashboard de Estatísticas</h1>
+        <p class="subtitle is-6 has-text-grey">Visão geral do seu desempenho de monitoramento e economia</p>
+    </div>
 
-        <li>
-          <a href="/search"> Buscar Produtos </a>
-        </li>
+    <div class="columns is-tablet mb-6">
+        
+        <div class="column">
+            <div class="box has-background-dark p-5 has-text-centered" style="border-radius: 8px; border: 1px solid #2f3542; height: 100%;">
+                <p class="heading has-text-grey-light is-size-7 mb-2">Produtos Monitorados</p>
+                <p class="title is-2 has-text-white has-text-weight-bold">
+                    {{ total_monitorados | default(0) }}
+                </p>
+                <p class="is-size-7 has-text-grey-light mt-2">Itens ativos no sistema</p>
+            </div>
+        </div>
 
-        <li>
-          <a href="/monitored"> Monitorados </a>
-        </li>
-      </ul>
-    </aside>
-  </div>
+        <div class="column">
+            <div class="box has-background-dark p-5 has-text-centered" style="border-radius: 8px; border: 1px solid #2f3542; height: 100%;">
+                <p class="heading has-text-grey-light is-size-7 mb-2">Alertas Disparados</p>
+                <p class="title is-2 has-text-warning has-text-weight-bold">
+                    {{ total_alertas | default(0) }}
+                </p>
+                <p class="is-size-7 has-text-grey-light mt-2">Metas de preço atingidas</p>
+            </div>
+        </div>
 
-  <div class="column">
+        <div class="column">
+            <div class="box has-background-dark p-5 has-text-centered" style="border-radius: 8px; border: 1px solid #2f3542; height: 100%;">
+                <p class="heading has-text-grey-light is-size-7 mb-2">Economia Total</p>
+                <p class="title is-2 has-text-primary has-text-weight-bold">
+                    R$ {{ economia_total | default(0.0) | round(2) }}
+                </p>
+                <p class="is-size-7 has-text-grey-light mt-2">Com base nos alertas gerados</p>
+            </div>
+        </div>
+
+    </div>
+
     <div class="columns">
-      <div class="column">
-        <div class="box">
-          <h3 class="title is-5">Produtos</h3>
-
-          25
+        <div class="column is-12">
+            <h2 class="title is-4 has-text-dark mb-4">Últimas Quedas de Preços</h2>
+            
+            {% if ultimas_quedas %}
+                <div class="box p-0 has-background-dark" style="overflow: hidden; border-radius: 8px; border: 1px solid #2f3542; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                    <table class="table is-striped is-hoverable is-fullwidth mb-0 has-background-dark has-text-white">
+                        <thead>
+                            <tr>
+                                <th class="has-text-white">Produto</th>
+                                <th class="has-text-white">Loja</th>
+                                <th class="has-text-centered has-text-white">Preço Antigo</th>
+                                <th class="has-text-centered has-text-white">Preço Atual</th>
+                                <th class="has-text-centered has-text-white">Queda</th>
+                                <th class="has-text-right has-text-white">Data/Hora</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in ultimas_quedas %}
+                                <tr style="background-color: transparent;">
+                                    <td class="has-text-weight-semibold has-text-white">{{ item.produto_nome }}</td>
+                                    <td class="has-text-grey-light">{{ item.loja_nome }}</td>
+                                    <td class="has-text-centered has-text-grey-light">R$ {{ item.preco_antigo | round(2) }}</td>
+                                    <td class="has-text-centered has-text-white has-text-weight-bold">R$ {{ item.preco_atual | round(2) }}</td>
+                                    <td class="has-text-centered">
+                                        <span class="tag is-success has-text-weight-bold">
+                                            ↓ {{ item.variacao_percentual | abs }}%
+                                        </span>
+                                    </td>
+                                    <td class="has-text-right has-text-grey-light is-size-7">{{ item.data.strftime('%d/%m — %H:%M') }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="box has-background-dark has-text-centered py-6" style="border-radius: 8px; border: 1px solid #2f3542; min-height: 200px; display: flex; flex-direction: column; justify-content: center;">
+                    <p class="has-text-white is-size-5">Nenhuma queda expressiva detectada recentemente.</p>
+                    <p class="is-size-7 has-text-grey-light mt-1">O histórico de variações começará a aparecer assim que o sistema atualizar as lojas.</p>
+                </div>
+            {% endif %}
         </div>
-      </div>
-
-      <div class="column">
-        <div class="box">
-          Economia
-
-          <br />
-
-          R$523
-        </div>
-      </div>
-
-      <div class="column">
-        <div class="box">
-          Alertas
-
-          <br />
-
-          5
-        </div>
-      </div>
     </div>
 
-    <div class="box">
-      <h2 class="title">Últimas quedas</h2>
-
-      RTX 4060
-
-      <br />
-
-      1899 → 1699
-    </div>
-  </div>
 </div>
-
 {% endblock %}
