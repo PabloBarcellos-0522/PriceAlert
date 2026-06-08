@@ -4,8 +4,7 @@ from flask import current_app
 
 class SerpApiService:
 
-    def __init__(self):
-        serpapi_api_key = current_app.config.get('SERPAPI_API_KEY')
+    def __init__(self, serpapi_api_key: str):
         self.client = serpapi.Client(api_key=serpapi_api_key)
 
     def search(self, query):

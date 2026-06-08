@@ -8,11 +8,12 @@ from price.services.serpapi_service import SerpApiService
 
 def init_services(app: Flask) -> None:
     mail = Mail(app)
+    serpapi_key = app.config.get('SERPAPI_API_KEY')
 
     app.mail = mail
     app.email_service = EmailService(mail)
-    app.serpapi_service = SerpApiService()
-    app.product_service = SerpapiProductService(app.serpapi_service)
+    app.serpapi_service = SerpApiService(serpapi_key)
+    app.product_service = SerpapiProductService()
     app.monitoring_service = MonitoringService()
 
     app.logger.info("Serviços registrados com sucesso")
