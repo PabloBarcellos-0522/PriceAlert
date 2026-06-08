@@ -1,25 +1,86 @@
-{% extends 'main/base.html' %} {% block content %}
+{% extends 'main/base.html' %}
 
-<h1 class="title">Buscar Produtos</h1>
+{% block title %}Buscar Produtos - Price Alert{% endblock %}
 
-<input class="input is-medium" placeholder="RTX 4060" />
-
-<br /><br />
-
-<div class="columns">
-  <div class="column">
-    <div class="card">
-      <div class="card-content">
-        <p class="title">RTX 4060 ASUS</p>
-
-        <p>Mercado Livre</p>
-
-        <p>R$1899</p>
-
-        <button class="button is-primary">Monitorar</button>
-      </div>
+{% block content %}
+<div class="container py-5" style="width: 100%; max-width: 1344px; flex-grow: 1;">
+    
+    <div class="mb-5">
+        <h1 class="title is-3 has-text-dark mb-1">Buscar Produtos</h1>
+        <p class="subtitle is-6 has-text-grey">Pesquise itens nas lojas integradas para iniciar o monitoramento</p>
     </div>
-  </div>
+
+    <div class="box has-background-dark p-5 mb-6" style="border-radius: 8px; border: 1px solid #2f3542; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+        <form method="GET" action="/search">
+            <div class="field has-addons">
+                <div class="control is-expanded">
+                    <input 
+                        class="input is-large has-background-black has-text-white" 
+                        style="border-color: #4a4a4a;" 
+                        type="text" 
+                        name="q" 
+                        value="{{ termo_busca | default('') }}" 
+                        placeholder="Digite o nome do produto ou cole a URL da loja..."
+                        required
+                    >
+                </div>
+                <div class="control">
+                    <button type="submit" class="button is-primary is-large px-6">
+                        <span class="has-text-weight-bold">Pesquisar</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="results-container">
+        {% if produtos %}
+            <div class="columns is-multiline">
+                {% for produto in produtos %}
+                    <div class="column is-4-tablet is-3-desktop">
+                        <div class="card" style="height: 100%; display: flex; flex-direction: column; border-radius: 6px; overflow: hidden;">
+                            <div class="card-image has-background-light is-flex is-justify-content-center is-align-items-center" style="height: 200px;">
+                                <figure class="image is-128x128">
+                                    <img src="{{ produto.imagem_url | default('https://bulma.io/assets/images/placeholders/128x128.png') }}" alt="{{ produto.nome }}" style="object-fit: contain; max-height: 100%;">
+                                </figure>
+                            </div>
+                            <div class="card-content" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div class="content mb-4">
+                                    <p class="title is-6 has-text-dark mb-2 style-ellipsis" title="{{ produto.nome }}">{{ produto.nome }}</p>
+                                    <p class="subtitle is-5 has-text-primary has-text-weight-bold mb-0">R$ {{ produto.preco_atual | round(2) }}</p>
+                                    <p class="is-size-7 has-text-grey mt-1">Loja: {{ produto.loja_nome }}</p>
+                                </div>
+                                <button class="button is-small is-dark is-fullwidth">Monitorar Preço</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="box has-background-dark has-text-centered py-6" style="border-radius: 8px; border: 1px solid #2f3542; min-height: 300px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <div class="mb-3">
+                    <span class="is-size-1">🔍</span>
+                </div>
+                {% if termo_busca %}
+                    <p class="has-text-white is-size-5 has-text-weight-semibold">Nenhum produto encontrado para "{{ termo_busca }}"</p>
+                    <p class="is-size-7 has-text-grey-light mt-1">Verifique a ortografia ou tente usar termos mais genéricos.</p>
+                {% else %}
+                    <p class="has-text-white is-size-5 has-text-weight-semibold">Pronto para buscar</p>
+                    <p class="is-size-7 has-text-grey-light mt-1">Insira o termo acima para varrer as lojas e encontrar os melhores preços.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
 </div>
 
+<style>
+    .style-ellipsis {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
 {% endblock %}

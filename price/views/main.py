@@ -1,29 +1,79 @@
 from flask import Blueprint, render_template, current_app, flash, redirect, url_for, request, abort
-from price.forms.main import ContatoForm
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired, Email, EqualTo
 
-# from price.models import User, RoleUser
+# Classe estrutural para o Login
+class LoginForm(FlaskForm):
+    email = StringField('E-mail', validators=[DataRequired(), Email()])
+    senha = PasswordField('Senha', validators=[DataRequired()])
+    submit = SubmitField('Entrar')
+
+# Nova classe estrutural para o Cadastro (SignUp)
+class SignUpForm(FlaskForm):
+    nome = StringField('Nome Completo', validators=[DataRequired()])
+    email = StringField('E-mail', validators=[DataRequired(), Email()])
+    senha = PasswordField('Senha', validators=[DataRequired()])
+    confirmar_senha = PasswordField('Confirmar Senha', validators=[
+        DataRequired(), 
+        EqualTo('senha', message='As senhas devem ser iguais.')
+    ])
+    submit = SubmitField('Criar Conta')
 
 bp_main = Blueprint("main", __name__)
 
 
 @bp_main.route("/")
 def index():
-    return render_template("main/index.html")
+    return render_template("main/index.html", usuario_logado=False)
 
 
 @bp_main.route("/dashboard")
 def dashboard():
-    return render_template("main/dashboard.html")
+    return render_template("main/dashboard.html", usuario_logado=False)
 
 
 @bp_main.route("/search")
 def search():
-    return render_template("main/search.html")
+    return render_template("main/search.html", usuario_logado=False)
 
 
 @bp_main.route("/monitored")
 def monitored():
-    return render_template("main/monitored.html")
+    return render_template("main/monitored.html", usuario_logado=False)
+
+
+@bp_main.route("/login", methods=["GET", "POST"])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        return redirect(url_for("main.index"))
+    return render_template("main/login.html", form=form, usuario_logado=False)
+
+
+@bp_main.route("/signup", methods=["GET", "POST"])
+def signup():
+    # Instanciando o formulário de cadastro para o WTForms funcionar no Jinja
+    form = SignUpForm()
+    
+    if form.validate_on_submit():
+        flash("Conta criada com sucesso! Faça seu login.", "success")
+        return redirect(url_for("main.login"))
+        
+    return render_template("main/signup.html", form=form, usuario_logado=False)
+
+
+@bp_main.route("/logout")
+def logout():
+    flash("Você saiu da sua conta.", "info")
+    return redirect(url_for("main.index"))
+
+
+# @bp_main.route('/')
+# @bp_main.route('/index')
+# def index():
+#     current_app.logger.debug("Renderizando template index.html dinamico")
+# ... (restante do código legado comentado preservado)
 
 
 # @bp_main.route('/')
