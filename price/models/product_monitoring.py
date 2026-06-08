@@ -1,11 +1,13 @@
 from datetime import datetime
+from decimal import Decimal
+from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, func
 from price.ext.db import db
 
 
-class Notification(db.Model):
-    __tablename__ = "notifications"
+class ProductMonitoring(db.Model):
+    __tablename__ = "product_monitorings"
     __table_args__ = {'extend_existing': True}
 
     id: Mapped[int] = mapped_column(
@@ -25,17 +27,31 @@ class Notification(db.Model):
         nullable=False
     )
 
-    title: Mapped[str] = mapped_column(
-        db.String(255),
+    desired_price: Mapped[Optional[Decimal]] = mapped_column(
+        db.Numeric(8, 2),
+        index=True,
+        nullable=True
+    )
+
+    last_notified_price: Mapped[Optional[Decimal]] = mapped_column(
+        db.Numeric(8, 2),
+        nullable=True
+    )
+
+    notify_only_lowest_price: Mapped[bool] = mapped_column(
+        db.Boolean,
+        default=False,
         nullable=False
     )
 
-    message: Mapped[str] = mapped_column(
-        db.String(255),
+    is_active: Mapped[bool] = mapped_column(
+        db.Boolean,
+        default=True,
+        index=True,
         nullable=False
     )
 
-    sent_at: Mapped[datetime] = mapped_column(
+    created_at: Mapped[datetime] = mapped_column(
         db.DateTime(timezone=True),
         nullable=False,
         server_default=func.now()
@@ -43,10 +59,10 @@ class Notification(db.Model):
 
     user = relationship(
         "User",
-        back_populates="notifications"
+        back_populates="monitorings"
     )
 
     product = relationship(
         "Product",
-        back_populates="notifications"
+        back_populates="monitorings"
     )

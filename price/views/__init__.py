@@ -4,7 +4,8 @@ Responsaveis por definir rotas e retornar respostas HTTP ao cliente.
 """
 from price.views.main import bp_main
 
-def init_app(app):
+
+def init_site(app):
     """
     Registra o blueprint na aplicacao Flask e envia mensagem de inicializacao.
     """

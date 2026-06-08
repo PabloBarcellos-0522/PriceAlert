@@ -1,5 +1,6 @@
-from typing import List, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING
 from datetime import datetime
+from decimal import Decimal
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, func
 from price.ext.db import db
@@ -11,6 +12,7 @@ if TYPE_CHECKING:
 
 class Offer(db.Model):
     __tablename__ = "offers"
+    __table_args__ = {'extend_existing': True}
 
     id: Mapped[int] = mapped_column(
         db.Integer,
@@ -18,38 +20,50 @@ class Offer(db.Model):
     )
 
     product_id: Mapped[int] = mapped_column(
-        ForeignKey("products.id")
+        ForeignKey("products.id"),
+        index=True,
+        nullable=False
     )
 
-    external_id: Mapped[str] = mapped_column(
-        db.String(150),
-        unique=True,
-        index=True
+    merchant: Mapped[str] = mapped_column(
+        db.String(255),
+        nullable=False
     )
 
-    source: Mapped[str] = mapped_column(
-        db.String(50)
+    product_url: Mapped[str] = mapped_column(
+        db.String(255),
+        nullable=False
     )
 
-    title: Mapped[str] = mapped_column(
-        db.Text
+    affiliate_url: Mapped[Optional[str]] = mapped_column(
+        db.String(255),
+        nullable=True
     )
 
-    url: Mapped[str] = mapped_column(
-        db.Text
+    current_price: Mapped[Decimal] = mapped_column(
+        db.Numeric(8, 2),
+        nullable=False
     )
 
-    image_url: Mapped[str] = mapped_column(
-        db.Text
+    shipping_price: Mapped[Optional[Decimal]] = mapped_column(
+        db.Numeric(8, 2),
+        nullable=True
     )
 
-    price: Mapped[float] = mapped_column(
-        db.Float
+    rating: Mapped[Optional[int]] = mapped_column(
+        db.Integer,
+        nullable=True
     )
 
-    last_update: Mapped[datetime] = mapped_column(
+    reviews_count: Mapped[Optional[int]] = mapped_column(
+        db.Integer,
+        nullable=True
+    )
+
+    last_seen_at: Mapped[datetime] = mapped_column(
         db.DateTime(timezone=True),
-        server_default=func.now()
+        nullable=True,
+        onupdate=func.now()
     )
 
     product: Mapped["Product"] = relationship(

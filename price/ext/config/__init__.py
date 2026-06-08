@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 
 
-def init_app(app):
+def init_config(app):
     # Carrega variaveis do ambiente (ja selecionado via tasks.py)
     load_dotenv(override=True)
 
@@ -18,6 +18,7 @@ def init_app(app):
     app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
     app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
     app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER')
+    app.config['SERPAPI_API_KEY'] = os.environ['SERPAPI_API_KEY']
 
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
         'DATABASE_URL',

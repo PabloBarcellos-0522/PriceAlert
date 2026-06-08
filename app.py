@@ -1,17 +1,12 @@
 import os
 import logging
-from dotenv import load_dotenv
+from logging.handlers import RotatingFileHandler
 from flask import Flask
 
 
 # ==========================================================
 # CARREGAMENTO CENTRALIZADO DE AMBIENTE
 # ==========================================================
-
-# env = os.environ.get("APP_ENV", "dev")
-
-# load_dotenv(f".env.{env}", override=True)
-
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -21,12 +16,18 @@ def create_app(test_config=None):
     # Configuracao recomendada para desenvolvimento:
     # Mostra mensagens DEBUG e INFO no console
     if app.debug:
+        log_file = os.path.join(app.instance_path, 'app.log')
+        handler = RotatingFileHandler(
+            log_file, maxBytes=100000, backupCount=10)
+        handler.setFormatter(logging.Formatter(
+            '[%(asctime)s] - %(levelname)s: %(message)s'))
+        app.logger.addHandler(handler)
         app.logger.setLevel(logging.DEBUG)
 
     # ----------------------------------------------------------
     # Configuracao da aplicacao (variaveis de ambiente)
     # ----------------------------------------------------------
-    from price.ext.config import init_app as init_config
+    from price.ext.config import init_config
     init_config(app)
 
     if test_config:
@@ -35,13 +36,13 @@ def create_app(test_config=None):
     # ----------------------------------------------------------
     # Personalizacao do CLI no sistema
     # ----------------------------------------------------------
-    from price.ext.cli import init_app as init_cli
+    from price.ext.cli import init_cli
     init_cli(app)
 
     # ----------------------------------------------------------
     # Inicializacao do banco de dados
     # ----------------------------------------------------------
-    from price.ext.db import init_app as init_db
+    from price.ext.db import init_db
     init_db(app)
 
     # Registro dos modelos no metadata do SQLAlchemy
@@ -52,16 +53,22 @@ def create_app(test_config=None):
     # Outras extensoes
     # ----------------------------------------------------------
     if not app.config.get("TESTING"):
-        from price.ext.wtf import init_app as init_wtf
+        from price.ext.wtf import init_wtf
         init_wtf(app)
 
-    from price.ext.debugtoolbar import init_app as init_toolbar
+    from price.ext.debugtoolbar import init_toolbar
     init_toolbar(app)
 
     # ----------------------------------------------------------
     # Blueprints (camada de apresentacao)
     # ----------------------------------------------------------
-    from price.views import init_app as init_site
+    from price.views import init_site
     init_site(app)
+
+    # ----------------------------------------------------------
+    # Services (camada de negocio)
+    # ----------------------------------------------------------
+    from price.services import init_services
+    init_services(app)
 
     return app
