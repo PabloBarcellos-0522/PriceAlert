@@ -1,35 +1,114 @@
-{% extends 'main/base.html' %} {% block content %}
+{% extends 'main/base.html' %}
 
-<div class="columns is-vcentered">
-  <div class="column">
-    <h1 class="title is-1">Monitore preços automaticamente</h1>
+{% block title %}Início - Price Alert{% endblock %}
 
-    <p class="subtitle">Pesquise produtos, acompanhe quedas e receba alertas.</p>
-
-    <div class="field has-addons">
-      <div class="control is-expanded">
-        <input class="input is-medium" placeholder="Pesquisar produto" />
-      </div>
-
-      <div class="control">
-        <button class="button is-primary is-medium">Pesquisar</button>
-      </div>
+{% block content %}
+<div class="container py-6 is-fluid" style="width: 100%; max-width: 1344px; flex-grow: 1;">
+    
+    <div class="box has-background-dark p-5 mb-6" style="border-radius: 8px; border: 1px solid #2f3542;">
+        <div class="columns is-tablet is-vcentered">
+            <div class="column is-4-tablet">
+                <h1 class="title is-4 mb-1 has-text-white">Encontre um Produto</h1>
+                <p class="subtitle is-6 has-text-grey-light">Monitore novos itens num piscar de olhos</p>
+            </div>
+            <div class="column is-8-tablet">
+                <form action="/search" method="GET">
+                    <div class="field has-addons">
+                        <div class="control is-expanded">
+                            <input class="input is-medium has-background-black has-text-white" style="border-color: #4a4a4a;" type="text" name="q" placeholder="Cole o link ou digite o nome do produto...">
+                        </div>
+                        <div class="control">
+                            <button type="submit" class="button is-primary is-medium">
+                                <span class="has-text-weight-bold">Buscar</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="column">
-    <div class="box">
-      <h3 class="title is-4">📊 Histórico</h3>
+    <div class="columns is-tablet">
+        
+        <div class="column is-half-tablet">
+            <div class="is-flex is-justify-content-space-between is-align-items-center mb-4">
+                <h2 class="title is-4 mb-0 has-text-dark">Alertas Recebidos</h2>
+                <span class="tag is-danger is-light has-text-weight-bold">Novos</span>
+            </div>
 
-      <p>Veja tendências de preços</p>
+            {% if alertas %}
+                <div class="is-flex is-flex-direction-column">
+                    {% for alerta in alertas %}
+                        <div class="notification is-success is-light mb-3" style="border-left: 5px solid #48c78e;">
+                            <div class="columns is-mobile is-vcentered">
+                                <div class="column">
+                                    <p class="title is-6 mb-1 has-text-dark">{{ alerta.produto_nome }}</p>
+                                    <p class="is-size-7 has-text-grey">
+                                        Caiu para <strong>R$ {{ alerta.preco_atual | round(2) }}</strong> (Seu alvo: R$ {{ alerta.preco_alvo | round(2) }})
+                                    </p>
+                                </div>
+                                <div class="column is-narrow has-text-right">
+                                    <span class="is-size-7 has-text-grey-dark">{{ alerta.data.strftime('%H:%M') }}</span>
+                                    <br>
+                                    <a href="{{ alerta.url_produto }}" target="_blank" class="button is-small is-success mt-1">Ir para loja</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="box has-background-dark has-text-centered py-6" style="border-radius: 8px; border: 1px solid #2f3542; height: 100%; min-height: 250px; display: flex; flex-direction: column; justify-content: center;">
+                    <p class="has-text-white is-size-5">Nenhum alerta disparado recentemente.</p>
+                    <p class="is-size-7 has-text-grey-light mt-1">Avisaremos aqui assim que os preços caírem.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="column is-half-tablet">
+            <div class="is-flex is-justify-content-space-between is-align-items-center mb-4">
+                <h2 class="title is-4 mb-0 has-text-dark">Histórico de Preços</h2>
+                <span class="tag is-info is-light has-text-weight-bold">Últimas checagens</span>
+            </div>
+
+            {% if historico %}
+                <div class="box p-0 has-background-dark" style="overflow: hidden; border-radius: 8px; border: 1px solid #2f3542;">
+                    <table class="table is-striped is-hoverable is-fullwidth mb-0 has-background-dark has-text-white">
+                        <thead>
+                            <tr>
+                                <th class="has-text-white">Produto</th>
+                                <th class="has-text-centered has-text-white">Preço</th>
+                                <th class="has-text-centered has-text-white">Variação</th>
+                                <th class="has-text-right has-text-white">Horário</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for registro in historico %}
+                                <tr style="background-color: transparent;">
+                                    <td class="has-text-weight-semibold is-size-6 has-text-white">{{ registro.produto_nome }}</td>
+                                    <td class="has-text-centered has-text-white">R$ {{ registro.preco | round(2) }}</td>
+                                    <td class="has-text-centered">
+                                        {% if registro.variacao < 0 %}
+                                            <span class="has-text-success has-text-weight-bold">↓ {{ registro.variacao | abs }}%</span>
+                                        {% elif registro.variacao > 0 %}
+                                            <span class="has-text-danger has-text-weight-bold">↑ {{ registro.variacao }}%</span>
+                                        {% else %}
+                                            <span class="has-text-grey-light">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="has-text-right has-text-grey-light is-size-7">{{ registro.data.strftime('%d/%m — %H:%M') }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="box has-background-dark has-text-centered py-6" style="border-radius: 8px; border: 1px solid #2f3542; height: 100%; min-height: 250px; display: flex; flex-direction: column; justify-content: center;">
+                    <p class="has-text-white is-size-5">Nenhum dado de variação capturado.</p>
+                    <p class="is-size-7 has-text-grey-light mt-1">O robô de checagem está ativo no backend.</p>
+                </div>
+            {% endif %}
+        </div>
+
     </div>
-
-    <div class="box">
-      <h3 class="title is-4">📧 Alertas</h3>
-
-      <p>Receba emails</p>
-    </div>
-  </div>
 </div>
-
 {% endblock %}

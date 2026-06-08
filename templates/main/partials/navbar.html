@@ -1,0 +1,56 @@
+<nav class="navbar has-background-black" role="navigation" aria-label="main navigation" style="flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-bottom: 1px solid #1a1a1a;">
+  <div class="container">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/" style="padding-left: 1.5rem;">
+        <strong class="is-size-4 has-text-white" style="letter-spacing: -0.5px;"> 📈 PriceAlert </strong>
+      </a>
+    </div>
+
+    <div class="navbar-menu is-active has-background-black">
+      <div class="navbar-start" style="padding-left: 1rem;">
+        <a class="navbar-item has-text-grey-light has-text-weight-medium px-4 mx-1 py-2" href="/dashboard"> 
+          Dashboard 
+        </a>
+        <a class="navbar-item has-text-grey-light has-text-weight-medium px-4 mx-1 py-2" href="/search"> 
+          Buscar 
+        </a>
+        <a class="navbar-item has-text-grey-light has-text-weight-medium px-4 mx-1 py-2" href="/monitored"> 
+          Alertas 
+        </a>
+      </div>
+
+      <div class="navbar-end" style="padding-right: 1.5rem;">
+        <div class="navbar-item">
+          <div class="buttons">
+            {% if usuario_logado %}
+              <a class="navbar-item has-text-grey-light has-text-weight-medium px-4 py-2" href="/logout">
+                Logout
+              </a>
+            {% else %}
+              <a class="navbar-item has-text-grey-light has-text-weight-medium px-4 py-2" href="/login">
+                Login
+              </a>
+              <a class="button is-primary is-small has-text-weight-bold px-4" href="/signup">
+                Cadastrar-se
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<style>
+  /* Efeito hover para os links normais da navbar */
+  .navbar-item.has-text-grey-light:hover {
+    background-color: transparent !important;
+    color: #00d1b2 !important;
+    transition: color 0.2s ease;
+  }
+  
+  /* Garante que o container de botões não quebre o alinhamento no Bulma */
+  .navbar-end .buttons {
+    align-items: center;
+  }
+</style>

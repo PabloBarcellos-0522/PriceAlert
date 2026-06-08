@@ -1,38 +1,32 @@
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-br" style="height: 100%;">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>PriceAlert</title>
+    <title>{% block title %}PriceAlert{% endblock %}</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css" />
 
     <link
       rel="stylesheet"
-      href="{{ url_for('static',
-        filename='css/style.css') }}"
+      href="{{ url_for('static', filename='css/style.css') }}"
     />
+    {% block css %}{% endblock %}
   </head>
 
-  <body>
-    <nav class="navbar is-white">
-      <div class="navbar-brand">
-        <a class="navbar-item">
-          <strong class="is-size-4"> 📈 PriceAlert </strong>
-        </a>
-      </div>
+  <body style="display: flex; flex-direction: column; min-height: 100%; background-color: #f4f5f7; margin: 0;">
+    
+    <header>
+      {% include 'main/partials/navbar.html' %}
+    </header>
 
-      <div class="navbar-menu">
-        <div class="navbar-end">
-          <a class="navbar-item"> Dashboard </a>
+    <section class="section" style="flex-grow: 1; display: flex; flex-direction: column; padding: 2rem 1.5rem;">
+        {% block content %} 
+        {% endblock %}
+    </section>
 
-          <a class="navbar-item"> Buscar </a>
+    {% include 'main/partials/footer.html' %}
 
-          <a class="navbar-item"> Alertas </a>
-        </div>
-      </div>
-    </nav>
-
-    <section class="section">{% block content %} {% endblock %}</section>
   </body>
 </html>
