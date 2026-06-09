@@ -31,12 +31,12 @@ class Offer(db.Model):
     )
 
     product_url: Mapped[str] = mapped_column(
-        db.String(255),
+        db.Text,
         nullable=False
     )
 
     affiliate_url: Mapped[Optional[str]] = mapped_column(
-        db.String(255),
+        db.Text,
         nullable=True
     )
 

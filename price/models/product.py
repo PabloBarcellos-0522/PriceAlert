@@ -31,8 +31,18 @@ class Product(db.Model):
         index=True
     )
 
-    brand: Mapped[str] = mapped_column(
-        db.String(255),
+    str_current_price: Mapped[str] = mapped_column(
+        db.String(50),
+        nullable=False
+    )
+
+    rating: Mapped[float] = mapped_column(
+        db.Integer,
+        nullable=True
+    )
+
+    review_count: Mapped[int] = mapped_column(
+        db.Integer,
         nullable=True
     )
 
@@ -80,3 +90,25 @@ class Product(db.Model):
         back_populates="product",
         cascade="all, delete-orphan"
     )
+
+    @property
+    def nome(self) -> str:
+        return self.title
+
+    @property
+    def imagem_url(self) -> str:
+        return self.image
+
+    @property
+    def preco_atual(self) -> float:
+        if self.offers:
+            best_offer = min(self.offers, key=lambda o: o.current_price)
+            return float(best_offer.current_price)
+        return 0.0
+
+    @property
+    def loja_nome(self) -> str:
+        if self.offers:
+            best_offer = min(self.offers, key=lambda o: o.current_price)
+            return best_offer.merchant
+        return "N/A"

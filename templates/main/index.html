@@ -1,114 +1,143 @@
 {% extends 'main/base.html' %}
-
-{% block title %}Início - Price Alert{% endblock %}
+{% block title %}Início{% endblock %}
+{% block meta_description %}Monitore preços de produtos em tempo real com o PriceAlert. Acompanhe quedas e receba alertas automáticos.{% endblock %}
 
 {% block content %}
-<div class="container py-6 is-fluid" style="width: 100%; max-width: 1344px; flex-grow: 1;">
-    
-    <div class="box has-background-dark p-5 mb-6" style="border-radius: 8px; border: 1px solid #2f3542;">
-        <div class="columns is-tablet is-vcentered">
-            <div class="column is-4-tablet">
-                <h1 class="title is-4 mb-1 has-text-white">Encontre um Produto</h1>
-                <p class="subtitle is-6 has-text-grey-light">Monitore novos itens num piscar de olhos</p>
-            </div>
-            <div class="column is-8-tablet">
-                <form action="/search" method="GET">
-                    <div class="field has-addons">
-                        <div class="control is-expanded">
-                            <input class="input is-medium has-background-black has-text-white" style="border-color: #4a4a4a;" type="text" name="q" placeholder="Cole o link ou digite o nome do produto...">
-                        </div>
-                        <div class="control">
-                            <button type="submit" class="button is-primary is-medium">
-                                <span class="has-text-weight-bold">Buscar</span>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
-    <div class="columns is-tablet">
-        
-        <div class="column is-half-tablet">
-            <div class="is-flex is-justify-content-space-between is-align-items-center mb-4">
-                <h2 class="title is-4 mb-0 has-text-dark">Alertas Recebidos</h2>
-                <span class="tag is-danger is-light has-text-weight-bold">Novos</span>
-            </div>
-
-            {% if alertas %}
-                <div class="is-flex is-flex-direction-column">
-                    {% for alerta in alertas %}
-                        <div class="notification is-success is-light mb-3" style="border-left: 5px solid #48c78e;">
-                            <div class="columns is-mobile is-vcentered">
-                                <div class="column">
-                                    <p class="title is-6 mb-1 has-text-dark">{{ alerta.produto_nome }}</p>
-                                    <p class="is-size-7 has-text-grey">
-                                        Caiu para <strong>R$ {{ alerta.preco_atual | round(2) }}</strong> (Seu alvo: R$ {{ alerta.preco_alvo | round(2) }})
-                                    </p>
-                                </div>
-                                <div class="column is-narrow has-text-right">
-                                    <span class="is-size-7 has-text-grey-dark">{{ alerta.data.strftime('%H:%M') }}</span>
-                                    <br>
-                                    <a href="{{ alerta.url_produto }}" target="_blank" class="button is-small is-success mt-1">Ir para loja</a>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="box has-background-dark has-text-centered py-6" style="border-radius: 8px; border: 1px solid #2f3542; height: 100%; min-height: 250px; display: flex; flex-direction: column; justify-content: center;">
-                    <p class="has-text-white is-size-5">Nenhum alerta disparado recentemente.</p>
-                    <p class="is-size-7 has-text-grey-light mt-1">Avisaremos aqui assim que os preços caírem.</p>
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="column is-half-tablet">
-            <div class="is-flex is-justify-content-space-between is-align-items-center mb-4">
-                <h2 class="title is-4 mb-0 has-text-dark">Histórico de Preços</h2>
-                <span class="tag is-info is-light has-text-weight-bold">Últimas checagens</span>
-            </div>
-
-            {% if historico %}
-                <div class="box p-0 has-background-dark" style="overflow: hidden; border-radius: 8px; border: 1px solid #2f3542;">
-                    <table class="table is-striped is-hoverable is-fullwidth mb-0 has-background-dark has-text-white">
-                        <thead>
-                            <tr>
-                                <th class="has-text-white">Produto</th>
-                                <th class="has-text-centered has-text-white">Preço</th>
-                                <th class="has-text-centered has-text-white">Variação</th>
-                                <th class="has-text-right has-text-white">Horário</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for registro in historico %}
-                                <tr style="background-color: transparent;">
-                                    <td class="has-text-weight-semibold is-size-6 has-text-white">{{ registro.produto_nome }}</td>
-                                    <td class="has-text-centered has-text-white">R$ {{ registro.preco | round(2) }}</td>
-                                    <td class="has-text-centered">
-                                        {% if registro.variacao < 0 %}
-                                            <span class="has-text-success has-text-weight-bold">↓ {{ registro.variacao | abs }}%</span>
-                                        {% elif registro.variacao > 0 %}
-                                            <span class="has-text-danger has-text-weight-bold">↑ {{ registro.variacao }}%</span>
-                                        {% else %}
-                                            <span class="has-text-grey-light">—</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="has-text-right has-text-grey-light is-size-7">{{ registro.data.strftime('%d/%m — %H:%M') }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <div class="box has-background-dark has-text-centered py-6" style="border-radius: 8px; border: 1px solid #2f3542; height: 100%; min-height: 250px; display: flex; flex-direction: column; justify-content: center;">
-                    <p class="has-text-white is-size-5">Nenhum dado de variação capturado.</p>
-                    <p class="is-size-7 has-text-grey-light mt-1">O robô de checagem está ativo no backend.</p>
-                </div>
-            {% endif %}
-        </div>
-
-    </div>
+<!-- Hero Search -->
+<div class="hero-search">
+  <div style="max-width: 720px;">
+    <h1 class="hero-title">📈 Monitoramento de Preços em Tempo Real</h1>
+    <p class="hero-sub">Busque qualquer produto e o PriceAlert rastreia automaticamente <strong>todas as lojas</strong> do Google Shopping por você.</p>
+    <form action="{{ url_for('main.search') }}" method="GET">
+      <div class="pa-input-group">
+        <input class="pa-input pa-input-lg" type="text" name="q"
+               placeholder="Ex: iPhone 15, RTX 4080, Tênis Nike..." autocomplete="off" />
+        <button type="submit" class="btn btn-primary btn-lg">🔍 Buscar</button>
+      </div>
+    </form>
+  </div>
 </div>
+
+{% if usuario_logado %}
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+
+  <!-- Alertas Recebidos -->
+  <div>
+    <div class="section-header">
+      <span class="section-title">🔔 Alertas Recentes</span>
+      {% if alertas %}
+        <span class="badge badge-danger">{{ alertas|length }} novo{{ 's' if alertas|length > 1 }}</span>
+      {% endif %}
+    </div>
+
+    {% if alertas %}
+      {% for alerta in alertas %}
+        <div class="alert-card">
+          <span class="alert-card-icon">🎯</span>
+          <div class="alert-card-body">
+            <div class="alert-card-title">{{ alerta.produto_nome }}</div>
+            <div class="alert-card-desc">
+              Preço caiu para <strong style="color:var(--success)">R$ {{ "%.2f"|format(alerta.preco_atual) }}</strong>
+              {% if alerta.preco_alvo > 0 %}
+                — alvo: R$ {{ "%.2f"|format(alerta.preco_alvo) }}
+              {% endif %}
+            </div>
+            <div class="alert-card-meta">{{ alerta.data.strftime('%d/%m/%Y %H:%M') }}</div>
+          </div>
+          <div class="alert-card-action">
+            <a href="{{ alerta.url_produto }}" target="_blank" class="btn btn-sm btn-primary">Ver loja</a>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="pa-card" style="text-align:center; padding: 2.5rem 1rem;">
+        <div style="font-size:2rem; margin-bottom:.5rem;">🔕</div>
+        <p style="color:var(--text-secondary); font-size:.875rem;">Nenhum alerta disparado ainda.<br>Cadastre produtos para começar.</p>
+        <a href="{{ url_for('main.search') }}" class="btn btn-primary btn-sm" style="margin-top:1rem;">Buscar Produtos</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Histórico de Variações -->
+  <div>
+    <div class="section-header">
+      <span class="section-title">📊 Histórico de Variações</span>
+      <span class="badge badge-accent">Últimas checagens</span>
+    </div>
+
+    {% if historico %}
+      <div class="pa-table-wrap">
+        <table class="pa-table">
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th class="col-center">Preço</th>
+              <th class="col-center">Variação</th>
+              <th class="col-right">Horário</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for reg in historico %}
+            <tr>
+              <td class="col-primary" style="max-width:160px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ reg.produto_nome }}</td>
+              <td class="col-price col-center">R$ {{ "%.2f"|format(reg.preco) }}</td>
+              <td class="col-center">
+                {% if reg.variacao < 0 %}
+                  <span class="price-change down">↓ {{ "%.1f"|format(reg.variacao|abs) }}%</span>
+                {% elif reg.variacao > 0 %}
+                  <span class="price-change up">↑ {{ "%.1f"|format(reg.variacao) }}%</span>
+                {% else %}
+                  <span class="price-change flat">—</span>
+                {% endif %}
+              </td>
+              <td class="col-right" style="color:var(--text-muted); font-size:.78rem; white-space:nowrap;">{{ reg.data.strftime('%d/%m — %H:%M') }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="pa-card" style="text-align:center; padding: 2.5rem 1rem;">
+        <div style="font-size:2rem; margin-bottom:.5rem;">📉</div>
+        <p style="color:var(--text-secondary); font-size:.875rem;">Sem variações registradas ainda.<br>O robô de monitoramento está ativo.</p>
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+
+{% else %}
+
+<!-- Não logado: call to action -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+
+  <div class="stat-card accent" style="text-align:center; padding:2rem;">
+    <div style="font-size:2.5rem; margin-bottom:.75rem;">🛒</div>
+    <h3 style="font-size:1rem; font-weight:700; color:var(--text-primary); margin-bottom:.5rem;">Todas as Lojas</h3>
+    <p style="font-size:.85rem; color:var(--text-secondary);">Um produto monitorado — todas as lojas do Google Shopping rastreadas automaticamente.</p>
+  </div>
+
+  <div class="stat-card success" style="text-align:center; padding:2rem;">
+    <div style="font-size:2.5rem; margin-bottom:.75rem;">🔔</div>
+    <h3 style="font-size:1rem; font-weight:700; color:var(--text-primary); margin-bottom:.5rem;">Alertas Inteligentes</h3>
+    <p style="font-size:.85rem; color:var(--text-secondary);">Defina seu preço alvo e receba notificações assim que a queda acontecer.</p>
+  </div>
+
+  <div class="stat-card warning" style="text-align:center; padding:2rem;">
+    <div style="font-size:2.5rem; margin-bottom:.75rem;">📊</div>
+    <h3 style="font-size:1rem; font-weight:700; color:var(--text-primary); margin-bottom:.5rem;">Histórico Completo</h3>
+    <p style="font-size:.85rem; color:var(--text-secondary);">Acompanhe o histórico de preços e tome decisões de compra com dados reais.</p>
+  </div>
+
+</div>
+
+<div style="text-align:center; padding: 1rem 0 2rem;">
+  <a href="{{ url_for('main.signup') }}" class="btn btn-primary btn-lg">Criar conta grátis →</a>
+  <a href="{{ url_for('main.login') }}" class="btn btn-ghost btn-lg" style="margin-left:.75rem;">Já tenho conta</a>
+</div>
+
+{% endif %}
+
 {% endblock %}

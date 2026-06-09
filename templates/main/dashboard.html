@@ -1,92 +1,142 @@
 {% extends 'main/base.html' %}
-
-{% block title %}Dashboard - Price Alert{% endblock %}
+{% block title %}Dashboard{% endblock %}
+{% block meta_description %}Visão geral dos seus monitoramentos, alertas e economia acumulada no PriceAlert.{% endblock %}
 
 {% block content %}
-<div class="container py-5" style="width: 100%; max-width: 1344px; flex-grow: 1;">
-    
-    <div class="mb-5">
-        <h1 class="title is-3 has-text-dark mb-1">Dashboard de Estatísticas</h1>
-        <p class="subtitle is-6 has-text-grey">Visão geral do seu desempenho de monitoramento e economia</p>
-    </div>
 
-    <div class="columns is-tablet mb-6">
-        
-        <div class="column">
-            <div class="box has-background-dark p-5 has-text-centered" style="border-radius: 8px; border: 1px solid #2f3542; height: 100%;">
-                <p class="heading has-text-grey-light is-size-7 mb-2">Produtos Monitorados</p>
-                <p class="title is-2 has-text-white has-text-weight-bold">
-                    {{ total_monitorados | default(0) }}
-                </p>
-                <p class="is-size-7 has-text-grey-light mt-2">Itens ativos no sistema</p>
-            </div>
-        </div>
-
-        <div class="column">
-            <div class="box has-background-dark p-5 has-text-centered" style="border-radius: 8px; border: 1px solid #2f3542; height: 100%;">
-                <p class="heading has-text-grey-light is-size-7 mb-2">Alertas Disparados</p>
-                <p class="title is-2 has-text-warning has-text-weight-bold">
-                    {{ total_alertas | default(0) }}
-                </p>
-                <p class="is-size-7 has-text-grey-light mt-2">Metas de preço atingidas</p>
-            </div>
-        </div>
-
-        <div class="column">
-            <div class="box has-background-dark p-5 has-text-centered" style="border-radius: 8px; border: 1px solid #2f3542; height: 100%;">
-                <p class="heading has-text-grey-light is-size-7 mb-2">Economia Total</p>
-                <p class="title is-2 has-text-primary has-text-weight-bold">
-                    R$ {{ economia_total | default(0.0) | round(2) }}
-                </p>
-                <p class="is-size-7 has-text-grey-light mt-2">Com base nos alertas gerados</p>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="columns">
-        <div class="column is-12">
-            <h2 class="title is-4 has-text-dark mb-4">Últimas Quedas de Preços</h2>
-            
-            {% if ultimas_quedas %}
-                <div class="box p-0 has-background-dark" style="overflow: hidden; border-radius: 8px; border: 1px solid #2f3542; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                    <table class="table is-striped is-hoverable is-fullwidth mb-0 has-background-dark has-text-white">
-                        <thead>
-                            <tr>
-                                <th class="has-text-white">Produto</th>
-                                <th class="has-text-white">Loja</th>
-                                <th class="has-text-centered has-text-white">Preço Antigo</th>
-                                <th class="has-text-centered has-text-white">Preço Atual</th>
-                                <th class="has-text-centered has-text-white">Queda</th>
-                                <th class="has-text-right has-text-white">Data/Hora</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in ultimas_quedas %}
-                                <tr style="background-color: transparent;">
-                                    <td class="has-text-weight-semibold has-text-white">{{ item.produto_nome }}</td>
-                                    <td class="has-text-grey-light">{{ item.loja_nome }}</td>
-                                    <td class="has-text-centered has-text-grey-light">R$ {{ item.preco_antigo | round(2) }}</td>
-                                    <td class="has-text-centered has-text-white has-text-weight-bold">R$ {{ item.preco_atual | round(2) }}</td>
-                                    <td class="has-text-centered">
-                                        <span class="tag is-success has-text-weight-bold">
-                                            ↓ {{ item.variacao_percentual | abs }}%
-                                        </span>
-                                    </td>
-                                    <td class="has-text-right has-text-grey-light is-size-7">{{ item.data.strftime('%d/%m — %H:%M') }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <div class="box has-background-dark has-text-centered py-6" style="border-radius: 8px; border: 1px solid #2f3542; min-height: 200px; display: flex; flex-direction: column; justify-content: center;">
-                    <p class="has-text-white is-size-5">Nenhuma queda expressiva detectada recentemente.</p>
-                    <p class="is-size-7 has-text-grey-light mt-1">O histórico de variações começará a aparecer assim que o sistema atualizar as lojas.</p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-
+<div class="pa-page-header">
+  <h1>Dashboard</h1>
+  <p>Visão geral do seu monitoramento de preços e economia acumulada</p>
 </div>
+
+<!-- Stats -->
+<div class="stat-grid" style="margin-bottom: 2rem;">
+  <div class="stat-card accent">
+    <div class="stat-label">Produtos Monitorados</div>
+    <div class="stat-value accent">{{ total_monitorados | default(0) }}</div>
+    <div class="stat-sub">Ativos no sistema</div>
+  </div>
+  <div class="stat-card warning">
+    <div class="stat-label">Alertas Disparados</div>
+    <div class="stat-value warning">{{ total_alertas | default(0) }}</div>
+    <div class="stat-sub">Metas de preço atingidas</div>
+  </div>
+  <div class="stat-card success">
+    <div class="stat-label">Economia Potencial</div>
+    <div class="stat-value success">R$ {{ "%.2f"|format(economia_total | default(0.0)) }}</div>
+    <div class="stat-sub">Entre lojas monitoradas</div>
+  </div>
+  <div class="stat-card info">
+    <div class="stat-label">Lojas Rastreadas</div>
+    <div class="stat-value info">{{ total_lojas | default('—') }}</div>
+    <div class="stat-sub">Offers no banco</div>
+  </div>
+</div>
+
+<!-- Últimas Quedas de Preço -->
+<div class="pa-card" style="margin-bottom: 2rem;">
+  <div class="pa-card-header">
+    <span class="pa-card-title">📉 Últimas Quedas de Preço</span>
+    <a href="{{ url_for('main.monitored') }}" class="btn btn-ghost btn-sm">Ver monitoramentos →</a>
+  </div>
+
+  {% if ultimas_quedas %}
+    <div class="pa-table-wrap">
+      <table class="pa-table">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Loja</th>
+            <th class="col-center">Preço Anterior</th>
+            <th class="col-center">Preço Atual</th>
+            <th class="col-center">Queda</th>
+            <th class="col-right">Data / Hora</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in ultimas_quedas %}
+          <tr>
+            <td class="col-primary" style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+              {{ item.produto_nome }}
+            </td>
+            <td>
+              <span class="badge badge-muted">{{ item.loja_nome }}</span>
+            </td>
+            <td class="col-center" style="color:var(--text-muted); text-decoration:line-through;">
+              R$ {{ "%.2f"|format(item.preco_antigo) }}
+            </td>
+            <td class="col-price col-center">R$ {{ "%.2f"|format(item.preco_atual) }}</td>
+            <td class="col-center">
+              <span class="price-change down">↓ {{ "%.1f"|format(item.variacao_percentual | abs) }}%</span>
+            </td>
+            <td class="col-right" style="color:var(--text-muted); font-size:.78rem; white-space:nowrap;">
+              {{ item.data.strftime('%d/%m — %H:%M') }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-state-icon">📊</div>
+      <h3>Nenhuma queda registrada ainda</h3>
+      <p>Assim que os preços dos produtos monitorados caírem, as variações aparecem aqui.</p>
+      <a href="{{ url_for('main.search') }}" class="btn btn-primary">Buscar Produtos</a>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Monitoramentos ativos: mini lista -->
+{% if monitoramentos_recentes %}
+<div class="pa-card">
+  <div class="pa-card-header">
+    <span class="pa-card-title">🔔 Monitoramentos Ativos</span>
+    <a href="{{ url_for('main.monitored') }}" class="btn btn-ghost btn-sm">Ver todos →</a>
+  </div>
+  <div class="pa-table-wrap">
+    <table class="pa-table">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th class="col-center">Melhor Preço Atual</th>
+          <th class="col-center">Preço Alvo</th>
+          <th class="col-center">Lojas</th>
+          <th class="col-center">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in monitoramentos_recentes %}
+        <tr>
+          <td class="col-primary" style="max-width:220px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+            {{ m.nome }}
+          </td>
+          <td class="col-price col-center">
+            {% if m.preco_atual > 0 %}R$ {{ "%.2f"|format(m.preco_atual) }}{% else %}<span style="color:var(--text-muted)">—</span>{% endif %}
+          </td>
+          <td class="col-center">
+            {% if m.desired_price %}
+              <span style="color:var(--warning); font-weight:700;">R$ {{ "%.2f"|format(m.preco_alvo) }}</span>
+            {% else %}
+              <span class="badge badge-muted">Menor histórico</span>
+            {% endif %}
+          </td>
+          <td class="col-center">
+            <span class="badge badge-accent">{{ m.product.offers|length }} loja{{ 's' if m.product.offers|length != 1 }}</span>
+          </td>
+          <td class="col-center">
+            {% if m.preco_atual > 0 and m.desired_price and m.preco_atual <= m.preco_alvo %}
+              <span class="badge badge-success">✅ Meta atingida</span>
+            {% else %}
+              <span class="badge badge-muted">⏳ Aguardando</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
 {% endblock %}

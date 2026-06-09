@@ -66,3 +66,30 @@ class ProductMonitoring(db.Model):
         "Product",
         back_populates="monitorings"
     )
+
+    @property
+    def nome(self) -> str:
+        return self.product.title if self.product else ""
+
+    @property
+    def imagem_url(self) -> str:
+        return self.product.image if self.product else ""
+
+    @property
+    def preco_atual(self) -> float:
+        if self.product and self.product.offers:
+            best_offer = min(self.product.offers, key=lambda o: o.current_price)
+            return float(best_offer.current_price)
+        return 0.0
+
+    @property
+    def loja_nome(self) -> str:
+        if self.product and self.product.offers:
+            best_offer = min(self.product.offers, key=lambda o: o.current_price)
+            return best_offer.merchant
+        return "N/A"
+
+    @property
+    def preco_alvo(self) -> float:
+        return float(self.desired_price) if self.desired_price else 0.0
+

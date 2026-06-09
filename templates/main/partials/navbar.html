@@ -1,56 +1,79 @@
-<nav class="navbar has-background-black" role="navigation" aria-label="main navigation" style="flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border-bottom: 1px solid #1a1a1a;">
-  <div class="container">
-    <div class="navbar-brand">
-      <a class="navbar-item" href="/" style="padding-left: 1.5rem;">
-        <strong class="is-size-4 has-text-white" style="letter-spacing: -0.5px;"> 📈 PriceAlert </strong>
+<nav class="pa-navbar">
+  <div class="pa-container">
+    <div class="inner">
+
+      <a href="{{ url_for('main.index') }}" class="pa-brand">
+        <span>📈</span> Price<span>Alert</span>
       </a>
-    </div>
 
-    <div class="navbar-menu is-active has-background-black">
-      <div class="navbar-start" style="padding-left: 1rem;">
-        <a class="navbar-item has-text-grey-light has-text-weight-medium px-4 mx-1 py-2" href="/dashboard"> 
-          Dashboard 
+      <div class="pa-nav-links">
+        <a href="{{ url_for('main.index') }}"
+           class="pa-nav-link {% if request.endpoint == 'main.index' %}active{% endif %}">
+          Início
         </a>
-        <a class="navbar-item has-text-grey-light has-text-weight-medium px-4 mx-1 py-2" href="/search"> 
-          Buscar 
+        <a href="{{ url_for('main.dashboard') }}"
+           class="pa-nav-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}">
+          Dashboard
         </a>
-        <a class="navbar-item has-text-grey-light has-text-weight-medium px-4 mx-1 py-2" href="/monitored"> 
-          Alertas 
+        <a href="{{ url_for('main.search') }}"
+           class="pa-nav-link {% if request.endpoint == 'main.search' %}active{% endif %}">
+          Buscar
+        </a>
+        <a href="{{ url_for('main.monitored') }}"
+           class="pa-nav-link {% if request.endpoint == 'main.monitored' %}active{% endif %}">
+          Meus Alertas
         </a>
       </div>
 
-      <div class="navbar-end" style="padding-right: 1.5rem;">
-        <div class="navbar-item">
-          <div class="buttons">
-            {% if usuario_logado %}
-              <a class="navbar-item has-text-grey-light has-text-weight-medium px-4 py-2" href="/logout">
-                Logout
-              </a>
-            {% else %}
-              <a class="navbar-item has-text-grey-light has-text-weight-medium px-4 py-2" href="/login">
-                Login
-              </a>
-              <a class="button is-primary is-small has-text-weight-bold px-4" href="/signup">
-                Cadastrar-se
-              </a>
-            {% endif %}
-          </div>
+      <div class="pa-nav-actions">
+        <!-- Theme Toggle -->
+        <div class="theme-toggle-wrap" title="Alternar tema claro/escuro">
+          <span id="theme-icon">🌙</span>
+          <button class="theme-toggle" id="theme-toggle-btn" aria-label="Alternar tema"></button>
         </div>
+
+        {% if usuario_logado %}
+          <a href="{{ url_for('main.monitored') }}" class="btn btn-ghost btn-sm">Alertas</a>
+          <form action="{{ url_for('main.logout') }}" method="GET" style="display:inline">
+            <button type="submit" class="btn btn-ghost btn-sm">Sair</button>
+          </form>
+        {% else %}
+          <a href="{{ url_for('main.login') }}" class="btn btn-ghost btn-sm">Entrar</a>
+          <a href="{{ url_for('main.signup') }}" class="btn btn-primary btn-sm">Cadastrar</a>
+        {% endif %}
       </div>
+
     </div>
   </div>
 </nav>
 
-<style>
-  /* Efeito hover para os links normais da navbar */
-  .navbar-item.has-text-grey-light:hover {
-    background-color: transparent !important;
-    color: #00d1b2 !important;
-    transition: color 0.2s ease;
-  }
-  
-  /* Garante que o container de botões não quebre o alinhamento no Bulma */
-  .navbar-end .buttons {
-    align-items: center;
-  }
-</style>
+<script>
+  (function () {
+    const html = document.documentElement;
+    const btn = document.getElementById('theme-toggle-btn');
+    const icon = document.getElementById('theme-icon');
+
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        html.setAttribute('data-theme', 'light');
+        if (icon) icon.textContent = '☀️';
+      } else {
+        html.removeAttribute('data-theme');
+        if (icon) icon.textContent = '🌙';
+      }
+    }
+
+    // Apply saved theme immediately (avoids flash)
+    const saved = localStorage.getItem('pa-theme') || 'dark';
+    applyTheme(saved);
+
+    if (btn) {
+      btn.addEventListener('click', function () {
+        const current = html.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+        const next = current === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('pa-theme', next);
+        applyTheme(next);
+      });
+    }
+  })();
+</script>

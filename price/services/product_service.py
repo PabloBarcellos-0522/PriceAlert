@@ -9,7 +9,7 @@ from price.models.price_history import PriceHistory
 
 class SerpapiProductService:
 
-    def search(self, query: str, fetch_offers: bool = False, max_details: int = 5):
+    def search(self, query: str, fetch_offers: bool = False, max_details: int = 10):
         """Busca produtos no Google Shopping e opcionalmente busca detalhes/offers.
 
         - fetch_offers: se True, chama `get_product_details` para até `max_details` produtos.
@@ -39,7 +39,9 @@ class SerpapiProductService:
                 product = Product(
                     google_product_id=prod_id,
                     title=result.get("title"),
-                    brand=result.get("brand"),
+                    str_current_price=result.get("price"),
+                    rating=result.get("rating"),
+                    review_count=result.get("reviews"),
                     product_token=result.get(
                         "immersive_product_page_token", ""),
                     product_shoping_link=result.get("product_link", ""),
@@ -95,7 +97,9 @@ class SerpapiProductService:
             product = Product(
                 google_product_id=google_id or f"unknown-{token}",
                 title=product_info.get("title", ""),
-                brand=product_info.get("brand"),
+                str_current_price=product_info.get("price"),
+                rating=product_info.get("rating"),
+                review_count=product_info.get("reviews"),
                 product_token=page_token,
                 product_shoping_link=product_info.get("product_link", ""),
                 image=(product_info.get("thumbnails") or [None])[0] if product_info.get(

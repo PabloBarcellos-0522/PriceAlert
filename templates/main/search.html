@@ -1,86 +1,369 @@
-{% extends 'main/base.html' %}
+{% extends 'main/base.html' %} {% block title %}Buscar Produtos{% endblock %} {% block
+meta_description %}Busque produtos no Google Shopping e monitore os preços em todas as lojas com o
+PriceAlert.{% endblock %} {% block content %}
 
-{% block title %}Buscar Produtos - Price Alert{% endblock %}
-
-{% block content %}
-<div class="container py-5" style="width: 100%; max-width: 1344px; flex-grow: 1;">
-    
-    <div class="mb-5">
-        <h1 class="title is-3 has-text-dark mb-1">Buscar Produtos</h1>
-        <p class="subtitle is-6 has-text-grey">Pesquise itens nas lojas integradas para iniciar o monitoramento</p>
-    </div>
-
-    <div class="box has-background-dark p-5 mb-6" style="border-radius: 8px; border: 1px solid #2f3542; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-        <form method="GET" action="/search">
-            <div class="field has-addons">
-                <div class="control is-expanded">
-                    <input 
-                        class="input is-large has-background-black has-text-white" 
-                        style="border-color: #4a4a4a;" 
-                        type="text" 
-                        name="q" 
-                        value="{{ termo_busca | default('') }}" 
-                        placeholder="Digite o nome do produto ou cole a URL da loja..."
-                        required
-                    >
-                </div>
-                <div class="control">
-                    <button type="submit" class="button is-primary is-large px-6">
-                        <span class="has-text-weight-bold">Pesquisar</span>
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-
-    <div class="results-container">
-        {% if produtos %}
-            <div class="columns is-multiline">
-                {% for produto in produtos %}
-                    <div class="column is-4-tablet is-3-desktop">
-                        <div class="card" style="height: 100%; display: flex; flex-direction: column; border-radius: 6px; overflow: hidden;">
-                            <div class="card-image has-background-light is-flex is-justify-content-center is-align-items-center" style="height: 200px;">
-                                <figure class="image is-128x128">
-                                    <img src="{{ produto.imagem_url | default('https://bulma.io/assets/images/placeholders/128x128.png') }}" alt="{{ produto.nome }}" style="object-fit: contain; max-height: 100%;">
-                                </figure>
-                            </div>
-                            <div class="card-content" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
-                                <div class="content mb-4">
-                                    <p class="title is-6 has-text-dark mb-2 style-ellipsis" title="{{ produto.nome }}">{{ produto.nome }}</p>
-                                    <p class="subtitle is-5 has-text-primary has-text-weight-bold mb-0">R$ {{ produto.preco_atual | round(2) }}</p>
-                                    <p class="is-size-7 has-text-grey mt-1">Loja: {{ produto.loja_nome }}</p>
-                                </div>
-                                <button class="button is-small is-dark is-fullwidth">Monitorar Preço</button>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="box has-background-dark has-text-centered py-6" style="border-radius: 8px; border: 1px solid #2f3542; min-height: 300px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                <div class="mb-3">
-                    <span class="is-size-1">🔍</span>
-                </div>
-                {% if termo_busca %}
-                    <p class="has-text-white is-size-5 has-text-weight-semibold">Nenhum produto encontrado para "{{ termo_busca }}"</p>
-                    <p class="is-size-7 has-text-grey-light mt-1">Verifique a ortografia ou tente usar termos mais genéricos.</p>
-                {% else %}
-                    <p class="has-text-white is-size-5 has-text-weight-semibold">Pronto para buscar</p>
-                    <p class="is-size-7 has-text-grey-light mt-1">Insira o termo acima para varrer as lojas e encontrar os melhores preços.</p>
-                {% endif %}
-            </div>
-        {% endif %}
-    </div>
-
+<div class="pa-page-header">
+  <h1>🔍 Buscar Produtos</h1>
+  <p>
+    O sistema busca primeiro no nosso banco de dados e só consulta o Google Shopping quando
+    necessário.
+  </p>
 </div>
 
+<!-- Search Box -->
+<div class="pa-card" style="margin-bottom: 1.25rem">
+  <form method="GET" action="{{ url_for('main.search') }}" id="search-form">
+    <input type="hidden" name="forcar_api" id="forcar-api-input" value="0" />
+    <div class="pa-input-group">
+      <input
+        class="pa-input pa-input-lg"
+        type="text"
+        name="q"
+        id="search-q"
+        value="{{ termo_busca | default('') }}"
+        placeholder="Ex: iPhone 14, Notebook Dell, Tênis Adidas..."
+        autocomplete="off"
+        required
+      />
+      <button type="submit" class="btn btn-primary btn-lg">Pesquisar</button>
+    </div>
+
+    {% if termo_busca %}
+    <div class="search-meta-row">
+      <span class="search-meta-count">
+        <span id="result-count">{{ produtos|length }}</span> resultado{{ 's' if produtos|length != 1
+        }} para
+        <strong style="color: var(--text-secondary)">"{{ termo_busca }}"</strong>
+      </span>
+      <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap">
+        {% if fonte == 'local' %}
+        <span
+          class="badge badge-success"
+          style="font-size: 0.65rem"
+          title="Resultados do banco interno — sem custo de API"
+          >⚡ Banco local</span
+        >
+        {% elif fonte == 'api' %}
+        <span
+          class="badge badge-accent"
+          style="font-size: 0.65rem"
+          title="Resultados buscados no Google Shopping via SerpAPI"
+          >🌐 Google Shopping</span
+        >
+        {% endif %} {% if fonte == 'local' %}
+        <button
+          type="button"
+          class="btn btn-ghost btn-sm"
+          id="btn-search-api"
+          title="Buscar versão atualizada no Google Shopping (usa tokens de API)"
+        >
+          🔄 Buscar no Google Shopping
+        </button>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  </form>
+</div>
+
+<!-- Filter / Sort Bar -->
+{% if produtos %}
+<div class="filter-bar" id="filter-bar">
+  <span class="filter-label">Ordenar por:</span>
+  <button class="filter-pill active" data-sort="default" id="sort-default">Relevância</button>
+  <button class="filter-pill" data-sort="price" id="sort-price">💰 Menor preço</button>
+  <button class="filter-pill" data-sort="reviews" id="sort-reviews">💬 Mais avaliações</button>
+  <button class="filter-pill" data-sort="rating" id="sort-rating">⭐ Melhor avaliado</button>
+</div>
+{% endif %}
+
+<!-- Results -->
+{% if produtos %}
+<div class="product-grid" id="product-grid">
+  {% for produto in produtos %}
+  <div
+    class="product-card"
+    data-price="{{ produto.preco_atual | default(0) }}"
+    data-rating="{{ produto.rating | default(0) }}"
+    data-reviews="{{ produto.review_count | default(0) }}"
+  >
+    <!-- Image -->
+    <div class="product-card-img">
+      <img
+        src="{{ produto.imagem_url or 'https://placehold.co/200x200/1a1f2e/9aa0b0?text=Sem+Imagem' }}"
+        alt="{{ produto.nome }}"
+        onerror="this.src = 'https://placehold.co/200x200/1a1f2e/9aa0b0?text=Sem+Imagem'"
+      />
+    </div>
+
+    <!-- Body -->
+    <div class="product-card-body">
+      <div class="product-card-title" title="{{ produto.nome }}">{{ produto.nome }}</div>
+
+      <!-- Rating -->
+      {% if produto.rating %}
+      <div class="product-card-rating">
+        <span class="stars">
+          {% set r = produto.rating | float %} {% for i in range(5) %} {% if i < r | int %}★{% elif
+          (r - i) >= 0.5 %}½{% else %}☆{% endif %} {% endfor %}
+        </span>
+        <span>{{ "%.1f"|format(produto.rating | float) }}</span>
+        {% if produto.review_count %}
+        <span class="review-count">({{ produto.review_count }} avaliações)</span>
+        {% endif %}
+      </div>
+      {% else %}
+      <div class="product-card-rating">
+        <span style="color: var(--text-muted); font-size: 0.72rem">Sem avaliações</span>
+      </div>
+      {% endif %} {% if produto.preco_atual > 0 %}
+      <div class="product-card-price">R$ {{ "%.2f"|format(produto.preco_atual) }}</div>
+      <div class="product-card-price-sub">Menor preço · {{ produto.loja_nome }}</div>
+      {% elif produto.str_current_price %}
+      <div class="product-card-price">{{ produto.str_current_price }}</div>
+      <div class="product-card-price-sub">&nbsp;</div>
+      {% else %}
+      <div class="product-card-price" style="color: var(--text-muted); font-size: 1rem">
+        Preço não disponível
+      </div>
+      <div class="product-card-price-sub">&nbsp;</div>
+      {% endif %}
+
+      <!-- Monitor Form -->
+      {% if usuario_logado %}
+      <form
+        action="{{ url_for('main.adicionar_monitoramento') }}"
+        method="POST"
+        class="product-card-form"
+      >
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <input type="hidden" name="product_id" value="{{ produto.id }}" />
+        <input
+          class="pa-input"
+          type="number"
+          step="0.01"
+          min="0"
+          name="desired_price"
+          placeholder="Preço alvo (R$) — opcional"
+        />
+        <button type="submit" class="btn btn-primary btn-sm btn-full">
+          🔔 Monitorar todas as lojas
+        </button>
+      </form>
+      {% else %}
+      <div class="product-card-form">
+        <a href="{{ url_for('main.login') }}" class="btn btn-ghost btn-sm btn-full">
+          Entrar para monitorar
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- "Not found? Search on Google Shopping" CTA (only when local results) -->
+{% if fonte == 'local' %}
+<div class="search-api-cta">
+  <div class="search-api-cta-inner">
+    <span class="search-api-cta-icon">🔍</span>
+    <div>
+      <strong>Não encontrou o que procurava?</strong>
+      <p>
+        Esses resultados vieram do nosso banco de dados. Você pode buscar no Google Shopping para
+        encontrar mais opções e preços atualizados.
+      </p>
+    </div>
+    <button
+      type="button"
+      class="btn btn-ghost"
+      id="btn-search-api-bottom"
+      title="Buscar no Google Shopping (usa tokens de API)"
+    >
+      🌐 Buscar no Google Shopping
+    </button>
+  </div>
+</div>
+{% endif %} {% elif termo_busca %}
+<div class="empty-state">
+  <div class="empty-state-icon">😕</div>
+  <h3>Nenhum resultado para "{{ termo_busca }}"</h3>
+  <p>
+    Não encontramos nada no nosso banco de dados. Que tal buscar diretamente no Google Shopping?
+  </p>
+  <div
+    style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem"
+  >
+    <a href="{{ url_for('main.search') }}" class="btn btn-ghost">Limpar busca</a>
+    <button type="button" class="btn btn-primary" id="btn-search-api-empty">
+      🌐 Buscar no Google Shopping
+    </button>
+  </div>
+</div>
+
+{% else %}
+<div class="empty-state">
+  <div class="empty-state-icon">🛍️</div>
+  <h3>Pronto para buscar</h3>
+  <p>
+    Digite o nome do produto acima. Vamos primeiro verificar nosso banco de dados e, se necessário,
+    consultar o Google Shopping.
+  </p>
+</div>
+{% endif %} {% endblock %} {% block css %}
 <style>
-    .style-ellipsis {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+  /* ── Search meta row ──────────────────────────────────── */
+  .search-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.6rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .search-meta-count {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  /* ── Filter bar ────────────────────────────────────────── */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+  .filter-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-right: 0.2rem;
+  }
+  .filter-pill {
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all var(--transition);
+  }
+  .filter-pill:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+  .filter-pill.active {
+    background: var(--accent-glow);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── "Not found?" CTA ──────────────────────────────────── */
+  .search-api-cta {
+    margin-top: 2.5rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-lg);
+    background: var(--bg-elevated);
+  }
+  .search-api-cta-inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .search-api-cta-icon {
+    font-size: 1.75rem;
+    flex-shrink: 0;
+  }
+  .search-api-cta-inner > div {
+    flex: 1;
+    min-width: 180px;
+  }
+  .search-api-cta-inner > div strong {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+  }
+  .search-api-cta-inner > div p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+  }
+
+  /* ── Card hide animation ───────────────────────────────── */
+  .product-card.hidden {
+    display: none;
+  }
 </style>
+{% endblock %} {% block js %}
+<script>
+  (function () {
+    // ── "Search on Google Shopping" buttons ───────────────
+    function triggerApiSearch() {
+      document.getElementById('forcar-api-input').value = '1';
+      document.getElementById('search-form').submit();
+    }
+
+    ['btn-search-api', 'btn-search-api-bottom', 'btn-search-api-empty'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('click', triggerApiSearch);
+    });
+
+    // ── Sort / Filter pills ────────────────────────────────
+    var pills  = document.querySelectorAll('.filter-pill');
+    var grid   = document.getElementById('product-grid');
+    var countEl = document.getElementById('result-count');
+
+    if (!grid) return;
+
+    var cards = Array.from(grid.querySelectorAll('.product-card'));
+
+    function sortCards(key) {
+      var sorted;
+      if (key === 'price') {
+        sorted = cards.slice().sort(function (a, b) {
+          var pa = parseFloat(a.dataset.price) || Infinity;
+          var pb = parseFloat(b.dataset.price) || Infinity;
+          return pa - pb;
+        });
+      } else if (key === 'rating') {
+        sorted = cards.slice().sort(function (a, b) {
+          return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
+        });
+      } else if (key === 'reviews') {
+        sorted = cards.slice().sort(function (a, b) {
+          return parseFloat(b.dataset.reviews) - parseFloat(a.dataset.reviews);
+        });
+      } else {
+        sorted = cards; // default: original order
+      }
+
+      // Remove all, re-append in sorted order
+      sorted.forEach(function (card) { grid.appendChild(card); });
+      if (countEl) countEl.textContent = sorted.length;
+    }
+
+    pills.forEach(function (pill) {
+      pill.addEventListener('click', function () {
+        pills.forEach(function (p) { p.classList.remove('active'); });
+        pill.classList.add('active');
+        sortCards(pill.dataset.sort);
+      });
+    });
+
+    // ── Auto-focus ─────────────────────────────────────────
+    {% if not termo_busca %}
+    document.getElementById('search-q').focus();
+    {% endif %}
+  })();
+</script>
 {% endblock %}
