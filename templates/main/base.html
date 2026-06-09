@@ -1,48 +1,42 @@
 <!doctype html>
 <html lang="pt-br">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="{% block meta_description %}Monitore preços em lojas do Google Shopping e receba alertas quando caírem.{% endblock %}" />
-  <title>{% block title %}PriceAlert{% endblock %} — Monitoramento de Preços</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="{% block meta_description %}Monitore preços em lojas do Google Shopping e receba alertas quando caírem.{% endblock %}"
+    />
+    <title>{% block title %}PriceAlert{% endblock %} — Monitoramento de Preços</title>
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
 
-  {% block css %}{% endblock %}
-</head>
-<body>
+    {% block css %}{% endblock %}
+  </head>
+  <body>
+    {% include 'main/partials/navbar.html' %}
 
-  {% include 'main/partials/navbar.html' %}
-
-  <main class="pa-page">
-    <div class="pa-container">
-
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          <div class="pa-alerts">
-            {% for category, message in messages %}
-              {% set icon = '✅' if category == 'success' else ('⚠️' if category == 'warning' else ('ℹ️' if category == 'info' else '❌')) %}
-              <div class="pa-alert pa-alert-{{ category }}">
-                <span class="pa-alert-icon">{{ icon }}</span>
-                <span>{{ message }}</span>
-              </div>
-            {% endfor %}
+    <main class="pa-page">
+      <div class="pa-container">
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+        <div class="pa-alerts">
+          {% for category, message in messages %} {% set icon = '✅' if category == 'success' else
+          ('⚠️' if category == 'warning' else ('ℹ️' if category == 'info' else '❌')) %}
+          <div class="pa-alert pa-alert-{{ category }}">
+            <span class="pa-alert-icon">{{ icon }}</span>
+            <span>{{ message }}</span>
           </div>
-        {% endif %}
-      {% endwith %}
+          {% endfor %}
+        </div>
+        {% endif %} {% endwith %} {% block content %}{% endblock %}
+      </div>
+    </main>
 
-      {% block content %}{% endblock %}
-
-    </div>
-  </main>
-
-  {% include 'main/partials/footer.html' %}
-
-  {% block js %}{% endblock %}
-</body>
+    {% include 'main/partials/footer.html' %} {% block js %}{% endblock %}
+  </body>
 </html>

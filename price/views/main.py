@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, current_app, flash, redirect, url_for, request, abort, session
+from flask import Blueprint, render_template, current_app, flash, redirect, url_for, request, abort, session, jsonify
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo
@@ -314,4 +314,60 @@ def remover_monitoramento(id):
         flash("Erro ao remover monitoramento.", "danger")
 
     return redirect(url_for("main.monitored"))
+
+
+@bp_main.route("/api/offer/<int:offer_id>/price-history")
+def offer_price_history(offer_id):
+    """Retorna o histórico de preços de uma oferta específica em JSON."""
+    if "user_id" not in session:
+        return jsonify({"error": "Não autorizado"}), 401
+
+    user_id = session["user_id"]
+
+    # Verifica se a oferta pertence a um produto monitorado pelo usuário
+    offer = (
+        Offer.query
+        .join(Product)
+        .join(ProductMonitoring, ProductMonitoring.product_id == Product.id)
+        .filter(
+            Offer.id == offer_id,
+            ProductMonitoring.user_id == user_id,
+            ProductMonitoring.is_active == True
+        )
+        .first()
+    )
+
+    if not offer:
+        return jsonify({"error": "Oferta não encontrada"}), 404
+
+    history = (
+        PriceHistory.query
+        .filter_by(offer_id=offer_id)
+        .order_by(PriceHistory.captured_at.asc())
+        .all()
+    )
+
+    # Inclui o preço atual como ponto mais recente
+    points = [
+        {
+            "date": ph.captured_at.strftime("%d/%m/%Y %H:%M"),
+            "price": float(ph.price)
+        }
+        for ph in history
+    ]
+
+    # Adiciona o preço corrente como último ponto se não houver histórico
+    # ou se o histórico existir mas o último ponto for diferente do atual
+    if not points or float(offer.current_price) != points[-1]["price"]:
+        from datetime import datetime
+        points.append({
+            "date": datetime.now().strftime("%d/%m/%Y %H:%M"),
+            "price": float(offer.current_price)
+        })
+
+    return jsonify({
+        "merchant": offer.merchant,
+        "current_price": float(offer.current_price),
+        "history": points
+    })
 

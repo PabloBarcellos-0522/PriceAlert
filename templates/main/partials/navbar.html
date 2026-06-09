@@ -1,26 +1,38 @@
 <nav class="pa-navbar">
   <div class="pa-container">
     <div class="inner">
-
       <a href="{{ url_for('main.index') }}" class="pa-brand">
-        <span>📈</span> Price<span>Alert</span>
+        <img
+          style="width: 55px; height: 55px"
+          src="/static/resources/PriceAlert_Icon.png"
+          alt="PriceAlert-Icon"
+        />
+        Price<span>Alert</span>
       </a>
 
       <div class="pa-nav-links">
-        <a href="{{ url_for('main.index') }}"
-           class="pa-nav-link {% if request.endpoint == 'main.index' %}active{% endif %}">
+        <a
+          href="{{ url_for('main.index') }}"
+          class="pa-nav-link {% if request.endpoint == 'main.index' %}active{% endif %}"
+        >
           Início
         </a>
-        <a href="{{ url_for('main.dashboard') }}"
-           class="pa-nav-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}">
+        <a
+          href="{{ url_for('main.dashboard') }}"
+          class="pa-nav-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}"
+        >
           Dashboard
         </a>
-        <a href="{{ url_for('main.search') }}"
-           class="pa-nav-link {% if request.endpoint == 'main.search' %}active{% endif %}">
+        <a
+          href="{{ url_for('main.search') }}"
+          class="pa-nav-link {% if request.endpoint == 'main.search' %}active{% endif %}"
+        >
           Buscar
         </a>
-        <a href="{{ url_for('main.monitored') }}"
-           class="pa-nav-link {% if request.endpoint == 'main.monitored' %}active{% endif %}">
+        <a
+          href="{{ url_for('main.monitored') }}"
+          class="pa-nav-link {% if request.endpoint == 'main.monitored' %}active{% endif %}"
+        >
           Meus Alertas
         </a>
       </div>
@@ -33,16 +45,15 @@
         </div>
 
         {% if usuario_logado %}
-          <a href="{{ url_for('main.monitored') }}" class="btn btn-ghost btn-sm">Alertas</a>
-          <form action="{{ url_for('main.logout') }}" method="GET" style="display:inline">
-            <button type="submit" class="btn btn-ghost btn-sm">Sair</button>
-          </form>
+        <a href="{{ url_for('main.monitored') }}" class="btn btn-ghost btn-sm">Alertas</a>
+        <form action="{{ url_for('main.logout') }}" method="GET" style="display: inline">
+          <button type="submit" class="btn btn-ghost btn-sm">Sair</button>
+        </form>
         {% else %}
-          <a href="{{ url_for('main.login') }}" class="btn btn-ghost btn-sm">Entrar</a>
-          <a href="{{ url_for('main.signup') }}" class="btn btn-primary btn-sm">Cadastrar</a>
+        <a href="{{ url_for('main.login') }}" class="btn btn-ghost btn-sm">Entrar</a>
+        <a href="{{ url_for('main.signup') }}" class="btn btn-primary btn-sm">Cadastrar</a>
         {% endif %}
       </div>
-
     </div>
   </div>
 </nav>
@@ -50,28 +61,28 @@
 <script>
   (function () {
     const html = document.documentElement;
-    const btn = document.getElementById('theme-toggle-btn');
-    const icon = document.getElementById('theme-icon');
+    const btn = document.getElementById("theme-toggle-btn");
+    const icon = document.getElementById("theme-icon");
 
     function applyTheme(theme) {
-      if (theme === 'light') {
-        html.setAttribute('data-theme', 'light');
-        if (icon) icon.textContent = '☀️';
+      if (theme === "light") {
+        html.setAttribute("data-theme", "light");
+        if (icon) icon.textContent = "☀️";
       } else {
-        html.removeAttribute('data-theme');
-        if (icon) icon.textContent = '🌙';
+        html.removeAttribute("data-theme");
+        if (icon) icon.textContent = "🌙";
       }
     }
 
     // Apply saved theme immediately (avoids flash)
-    const saved = localStorage.getItem('pa-theme') || 'dark';
+    const saved = localStorage.getItem("pa-theme") || "dark";
     applyTheme(saved);
 
     if (btn) {
-      btn.addEventListener('click', function () {
-        const current = html.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-        const next = current === 'dark' ? 'light' : 'dark';
-        localStorage.setItem('pa-theme', next);
+      btn.addEventListener("click", function () {
+        const current = html.getAttribute("data-theme") === "light" ? "light" : "dark";
+        const next = current === "dark" ? "light" : "dark";
+        localStorage.setItem("pa-theme", next);
         applyTheme(next);
       });
     }

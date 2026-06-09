@@ -1,8 +1,6 @@
-{% extends 'main/base.html' %}
-{% block title %}Dashboard{% endblock %}
-{% block meta_description %}Visão geral dos seus monitoramentos, alertas e economia acumulada no PriceAlert.{% endblock %}
-
-{% block content %}
+{% extends 'main/base.html' %} {% block title %}Dashboard{% endblock %} {% block meta_description
+%}Visão geral dos seus monitoramentos, alertas e economia acumulada no PriceAlert.{% endblock %} {%
+block content %}
 
 <div class="pa-page-header">
   <h1>Dashboard</h1>
@@ -10,7 +8,7 @@
 </div>
 
 <!-- Stats -->
-<div class="stat-grid" style="margin-bottom: 2rem;">
+<div class="stat-grid" style="margin-bottom: 2rem">
   <div class="stat-card accent">
     <div class="stat-label">Produtos Monitorados</div>
     <div class="stat-value accent">{{ total_monitorados | default(0) }}</div>
@@ -34,56 +32,64 @@
 </div>
 
 <!-- Últimas Quedas de Preço -->
-<div class="pa-card" style="margin-bottom: 2rem;">
+<div class="pa-card" style="margin-bottom: 2rem">
   <div class="pa-card-header">
     <span class="pa-card-title">📉 Últimas Quedas de Preço</span>
     <a href="{{ url_for('main.monitored') }}" class="btn btn-ghost btn-sm">Ver monitoramentos →</a>
   </div>
 
   {% if ultimas_quedas %}
-    <div class="pa-table-wrap">
-      <table class="pa-table">
-        <thead>
-          <tr>
-            <th>Produto</th>
-            <th>Loja</th>
-            <th class="col-center">Preço Anterior</th>
-            <th class="col-center">Preço Atual</th>
-            <th class="col-center">Queda</th>
-            <th class="col-right">Data / Hora</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in ultimas_quedas %}
-          <tr>
-            <td class="col-primary" style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-              {{ item.produto_nome }}
-            </td>
-            <td>
-              <span class="badge badge-muted">{{ item.loja_nome }}</span>
-            </td>
-            <td class="col-center" style="color:var(--text-muted); text-decoration:line-through;">
-              R$ {{ "%.2f"|format(item.preco_antigo) }}
-            </td>
-            <td class="col-price col-center">R$ {{ "%.2f"|format(item.preco_atual) }}</td>
-            <td class="col-center">
-              <span class="price-change down">↓ {{ "%.1f"|format(item.variacao_percentual | abs) }}%</span>
-            </td>
-            <td class="col-right" style="color:var(--text-muted); font-size:.78rem; white-space:nowrap;">
-              {{ item.data.strftime('%d/%m — %H:%M') }}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+  <div class="pa-table-wrap">
+    <table class="pa-table">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Loja</th>
+          <th class="col-center">Preço Anterior</th>
+          <th class="col-center">Preço Atual</th>
+          <th class="col-center">Queda</th>
+          <th class="col-right">Data / Hora</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in ultimas_quedas %}
+        <tr>
+          <td
+            class="col-primary"
+            style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"
+          >
+            {{ item.produto_nome }}
+          </td>
+          <td>
+            <span class="badge badge-muted">{{ item.loja_nome }}</span>
+          </td>
+          <td class="col-center" style="color: var(--text-muted); text-decoration: line-through">
+            R$ {{ "%.2f"|format(item.preco_antigo) }}
+          </td>
+          <td class="col-price col-center">R$ {{ "%.2f"|format(item.preco_atual) }}</td>
+          <td class="col-center">
+            <span class="price-change down"
+              >↓ {{ "%.1f"|format(item.variacao_percentual | abs) }}%</span
+            >
+          </td>
+          <td
+            class="col-right"
+            style="color: var(--text-muted); font-size: 0.78rem; white-space: nowrap"
+          >
+            {{ item.data.strftime('%d/%m — %H:%M') }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
   {% else %}
-    <div class="empty-state">
-      <div class="empty-state-icon">📊</div>
-      <h3>Nenhuma queda registrada ainda</h3>
-      <p>Assim que os preços dos produtos monitorados caírem, as variações aparecem aqui.</p>
-      <a href="{{ url_for('main.search') }}" class="btn btn-primary">Buscar Produtos</a>
-    </div>
+  <div class="empty-state">
+    <div class="empty-state-icon">📊</div>
+    <h3>Nenhuma queda registrada ainda</h3>
+    <p>Assim que os preços dos produtos monitorados caírem, as variações aparecem aqui.</p>
+    <a href="{{ url_for('main.search') }}" class="btn btn-primary">Buscar Produtos</a>
+  </div>
   {% endif %}
 </div>
 
@@ -108,27 +114,37 @@
       <tbody>
         {% for m in monitoramentos_recentes %}
         <tr>
-          <td class="col-primary" style="max-width:220px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+          <td
+            class="col-primary"
+            style="max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"
+          >
             {{ m.nome }}
           </td>
           <td class="col-price col-center">
-            {% if m.preco_atual > 0 %}R$ {{ "%.2f"|format(m.preco_atual) }}{% else %}<span style="color:var(--text-muted)">—</span>{% endif %}
+            {% if m.preco_atual > 0 %}R$ {{ "%.2f"|format(m.preco_atual) }}{% else %}<span
+              style="color: var(--text-muted)"
+              >—</span
+            >{% endif %}
           </td>
           <td class="col-center">
             {% if m.desired_price %}
-              <span style="color:var(--warning); font-weight:700;">R$ {{ "%.2f"|format(m.preco_alvo) }}</span>
+            <span style="color: var(--warning); font-weight: 700"
+              >R$ {{ "%.2f"|format(m.preco_alvo) }}</span
+            >
             {% else %}
-              <span class="badge badge-muted">Menor histórico</span>
+            <span class="badge badge-muted">Menor histórico</span>
             {% endif %}
           </td>
           <td class="col-center">
-            <span class="badge badge-accent">{{ m.product.offers|length }} loja{{ 's' if m.product.offers|length != 1 }}</span>
+            <span class="badge badge-accent"
+              >{{ m.product.offers|length }} loja{{ 's' if m.product.offers|length != 1 }}</span
+            >
           </td>
           <td class="col-center">
             {% if m.preco_atual > 0 and m.desired_price and m.preco_atual <= m.preco_alvo %}
-              <span class="badge badge-success">✅ Meta atingida</span>
+            <span class="badge badge-success">✅ Meta atingida</span>
             {% else %}
-              <span class="badge badge-muted">⏳ Aguardando</span>
+            <span class="badge badge-muted">⏳ Aguardando</span>
             {% endif %}
           </td>
         </tr>
@@ -137,6 +153,4 @@
     </table>
   </div>
 </div>
-{% endif %}
-
-{% endblock %}
+{% endif %} {% endblock %}

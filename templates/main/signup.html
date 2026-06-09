@@ -1,11 +1,8 @@
-{% extends 'main/base.html' %}
-{% block title %}Criar Conta{% endblock %}
-{% block meta_description %}Crie sua conta no PriceAlert e comece a monitorar preços em todas as lojas do Google Shopping.{% endblock %}
-
-{% block content %}
+{% extends 'main/base.html' %} {% block title %}Criar Conta{% endblock %} {% block meta_description
+%}Crie sua conta no PriceAlert e comece a monitorar preços em todas as lojas do Google Shopping.{%
+endblock %} {% block content %}
 <div class="auth-wrap">
   <div class="auth-box">
-
     <div class="auth-logo">
       <span class="icon">🚀</span>
       <h1>Criar Conta</h1>
@@ -17,64 +14,65 @@
 
       <div class="pa-field">
         <label class="pa-label" for="nome">{{ form.nome.label.text }}</label>
-        {{ form.nome(class="pa-input", id="nome", placeholder="Seu nome completo", autocomplete="name") }}
-        {% if form.nome.errors %}
-          <div class="field-errors">
-            {% for e in form.nome.errors %}
-              <span class="field-error">{{ e }}</span>
-            {% endfor %}
-          </div>
+        {{ form.nome(class="pa-input", id="nome", placeholder="Seu nome completo",
+        autocomplete="name") }} {% if form.nome.errors %}
+        <div class="field-errors">
+          {% for e in form.nome.errors %}
+          <span class="field-error">{{ e }}</span>
+          {% endfor %}
+        </div>
         {% endif %}
       </div>
 
       <div class="pa-field">
         <label class="pa-label" for="email">{{ form.email.label.text }}</label>
-        {{ form.email(class="pa-input", id="email", placeholder="seu@email.com", autocomplete="email") }}
-        {% if form.email.errors %}
-          <div class="field-errors">
-            {% for e in form.email.errors %}
-              <span class="field-error">{{ e }}</span>
-            {% endfor %}
-          </div>
+        {{ form.email(class="pa-input", id="email", placeholder="seu@email.com",
+        autocomplete="email") }} {% if form.email.errors %}
+        <div class="field-errors">
+          {% for e in form.email.errors %}
+          <span class="field-error">{{ e }}</span>
+          {% endfor %}
+        </div>
         {% endif %}
       </div>
 
       <div class="pa-field">
         <label class="pa-label" for="senha">{{ form.senha.label.text }}</label>
-        {{ form.senha(class="pa-input", id="senha", placeholder="Mínimo 6 caracteres", autocomplete="new-password") }}
-        {% if form.senha.errors %}
-          <div class="field-errors">
-            {% for e in form.senha.errors %}
-              <span class="field-error">{{ e }}</span>
-            {% endfor %}
-          </div>
+        {{ form.senha(class="pa-input", id="senha", placeholder="Mínimo 6 caracteres",
+        autocomplete="new-password") }} {% if form.senha.errors %}
+        <div class="field-errors">
+          {% for e in form.senha.errors %}
+          <span class="field-error">{{ e }}</span>
+          {% endfor %}
+        </div>
         {% endif %}
       </div>
 
       <div class="pa-field">
         <label class="pa-label" for="confirmar_senha">{{ form.confirmar_senha.label.text }}</label>
-        {{ form.confirmar_senha(class="pa-input", id="confirmar_senha", placeholder="Repita a senha", autocomplete="new-password") }}
-        {% if form.confirmar_senha.errors %}
-          <div class="field-errors">
-            {% for e in form.confirmar_senha.errors %}
-              <span class="field-error">{{ e }}</span>
-            {% endfor %}
-          </div>
+        {{ form.confirmar_senha(class="pa-input", id="confirmar_senha", placeholder="Repita a
+        senha", autocomplete="new-password") }} {% if form.confirmar_senha.errors %}
+        <div class="field-errors">
+          {% for e in form.confirmar_senha.errors %}
+          <span class="field-error">{{ e }}</span>
+          {% endfor %}
+        </div>
         {% endif %}
       </div>
 
-      <div class="pa-field" style="margin-bottom: 0;">
+      <div class="pa-field" style="margin-bottom: 0">
         {{ form.submit(class="btn btn-primary btn-full btn-lg") }}
       </div>
     </form>
 
     <div class="auth-divider">ou</div>
 
-    <div style="text-align: center; font-size: .875rem; color: var(--text-secondary);">
+    <div style="text-align: center; font-size: 0.875rem; color: var(--text-secondary)">
       Já tem uma conta?
-      <a href="{{ url_for('main.login') }}" style="font-weight:600; color:var(--accent);">Fazer login</a>
+      <a href="{{ url_for('main.login') }}" style="font-weight: 600; color: var(--accent)"
+        >Fazer login</a
+      >
     </div>
-
   </div>
 </div>
 {% endblock %}

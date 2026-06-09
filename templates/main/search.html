@@ -20,6 +20,7 @@ PriceAlert.{% endblock %} {% block content %}
         type="text"
         name="q"
         id="search-q"
+        autofocus
         value="{{ termo_busca | default('') }}"
         placeholder="Ex: iPhone 14, Notebook Dell, Tênis Adidas..."
         autocomplete="off"
@@ -309,37 +310,37 @@ PriceAlert.{% endblock %} {% block content %}
   (function () {
     // ── "Search on Google Shopping" buttons ───────────────
     function triggerApiSearch() {
-      document.getElementById('forcar-api-input').value = '1';
-      document.getElementById('search-form').submit();
+      document.getElementById("forcar-api-input").value = "1";
+      document.getElementById("search-form").submit();
     }
 
-    ['btn-search-api', 'btn-search-api-bottom', 'btn-search-api-empty'].forEach(function (id) {
+    ["btn-search-api", "btn-search-api-bottom", "btn-search-api-empty"].forEach(function (id) {
       var el = document.getElementById(id);
-      if (el) el.addEventListener('click', triggerApiSearch);
+      if (el) el.addEventListener("click", triggerApiSearch);
     });
 
     // ── Sort / Filter pills ────────────────────────────────
-    var pills  = document.querySelectorAll('.filter-pill');
-    var grid   = document.getElementById('product-grid');
-    var countEl = document.getElementById('result-count');
+    var pills = document.querySelectorAll(".filter-pill");
+    var grid = document.getElementById("product-grid");
+    var countEl = document.getElementById("result-count");
 
     if (!grid) return;
 
-    var cards = Array.from(grid.querySelectorAll('.product-card'));
+    var cards = Array.from(grid.querySelectorAll(".product-card"));
 
     function sortCards(key) {
       var sorted;
-      if (key === 'price') {
+      if (key === "price") {
         sorted = cards.slice().sort(function (a, b) {
           var pa = parseFloat(a.dataset.price) || Infinity;
           var pb = parseFloat(b.dataset.price) || Infinity;
           return pa - pb;
         });
-      } else if (key === 'rating') {
+      } else if (key === "rating") {
         sorted = cards.slice().sort(function (a, b) {
           return parseFloat(b.dataset.rating) - parseFloat(a.dataset.rating);
         });
-      } else if (key === 'reviews') {
+      } else if (key === "reviews") {
         sorted = cards.slice().sort(function (a, b) {
           return parseFloat(b.dataset.reviews) - parseFloat(a.dataset.reviews);
         });
@@ -348,22 +349,21 @@ PriceAlert.{% endblock %} {% block content %}
       }
 
       // Remove all, re-append in sorted order
-      sorted.forEach(function (card) { grid.appendChild(card); });
+      sorted.forEach(function (card) {
+        grid.appendChild(card);
+      });
       if (countEl) countEl.textContent = sorted.length;
     }
 
     pills.forEach(function (pill) {
-      pill.addEventListener('click', function () {
-        pills.forEach(function (p) { p.classList.remove('active'); });
-        pill.classList.add('active');
+      pill.addEventListener("click", function () {
+        pills.forEach(function (p) {
+          p.classList.remove("active");
+        });
+        pill.classList.add("active");
         sortCards(pill.dataset.sort);
       });
     });
-
-    // ── Auto-focus ─────────────────────────────────────────
-    {% if not termo_busca %}
-    document.getElementById('search-q').focus();
-    {% endif %}
   })();
 </script>
 {% endblock %}

@@ -1,18 +1,24 @@
-{% extends 'main/base.html' %}
-{% block title %}Início{% endblock %}
-{% block meta_description %}Monitore preços de produtos em tempo real com o PriceAlert. Acompanhe quedas e receba alertas automáticos.{% endblock %}
-
-{% block content %}
+{% extends 'main/base.html' %} {% block title %}Início{% endblock %} {% block meta_description
+%}Monitore preços de produtos em tempo real com o PriceAlert. Acompanhe quedas e receba alertas
+automáticos.{% endblock %} {% block content %}
 
 <!-- Hero Search -->
 <div class="hero-search">
-  <div style="max-width: 720px;">
-    <h1 class="hero-title">📈 Monitoramento de Preços em Tempo Real</h1>
-    <p class="hero-sub">Busque qualquer produto e o PriceAlert rastreia automaticamente <strong>todas as lojas</strong> do Google Shopping por você.</p>
+  <div>
+    <h1 class="hero-title">Monitoramento de Preços em Tempo Real</h1>
+    <p class="hero-sub">
+      Busque qualquer produto e o PriceAlert rastreia automaticamente
+      <strong>todas as lojas</strong> do Google Shopping por você.
+    </p>
     <form action="{{ url_for('main.search') }}" method="GET">
       <div class="pa-input-group">
-        <input class="pa-input pa-input-lg" type="text" name="q"
-               placeholder="Ex: iPhone 15, RTX 4080, Tênis Nike..." autocomplete="off" />
+        <input
+          class="pa-input pa-input-lg"
+          type="text"
+          name="q"
+          placeholder="Ex: iPhone 15, RTX 4080, Tênis Nike..."
+          autocomplete="off"
+        />
         <button type="submit" class="btn btn-primary btn-lg">🔍 Buscar</button>
       </div>
     </form>
@@ -21,42 +27,47 @@
 
 {% if usuario_logado %}
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem">
   <!-- Alertas Recebidos -->
   <div>
     <div class="section-header">
       <span class="section-title">🔔 Alertas Recentes</span>
       {% if alertas %}
-        <span class="badge badge-danger">{{ alertas|length }} novo{{ 's' if alertas|length > 1 }}</span>
+      <span class="badge badge-danger"
+        >{{ alertas|length }} novo{{ 's' if alertas|length > 1 }}</span
+      >
       {% endif %}
     </div>
 
-    {% if alertas %}
-      {% for alerta in alertas %}
-        <div class="alert-card">
-          <span class="alert-card-icon">🎯</span>
-          <div class="alert-card-body">
-            <div class="alert-card-title">{{ alerta.produto_nome }}</div>
-            <div class="alert-card-desc">
-              Preço caiu para <strong style="color:var(--success)">R$ {{ "%.2f"|format(alerta.preco_atual) }}</strong>
-              {% if alerta.preco_alvo > 0 %}
-                — alvo: R$ {{ "%.2f"|format(alerta.preco_alvo) }}
-              {% endif %}
-            </div>
-            <div class="alert-card-meta">{{ alerta.data.strftime('%d/%m/%Y %H:%M') }}</div>
-          </div>
-          <div class="alert-card-action">
-            <a href="{{ alerta.url_produto }}" target="_blank" class="btn btn-sm btn-primary">Ver loja</a>
-          </div>
+    {% if alertas %} {% for alerta in alertas %}
+    <div class="alert-card">
+      <span class="alert-card-icon">🎯</span>
+      <div class="alert-card-body">
+        <div class="alert-card-title">{{ alerta.produto_nome }}</div>
+        <div class="alert-card-desc">
+          Preço caiu para
+          <strong style="color: var(--success)">R$ {{ "%.2f"|format(alerta.preco_atual) }}</strong>
+          {% if alerta.preco_alvo > 0 %} — alvo: R$ {{ "%.2f"|format(alerta.preco_alvo) }} {% endif
+          %}
         </div>
-      {% endfor %}
-    {% else %}
-      <div class="pa-card" style="text-align:center; padding: 2.5rem 1rem;">
-        <div style="font-size:2rem; margin-bottom:.5rem;">🔕</div>
-        <p style="color:var(--text-secondary); font-size:.875rem;">Nenhum alerta disparado ainda.<br>Cadastre produtos para começar.</p>
-        <a href="{{ url_for('main.search') }}" class="btn btn-primary btn-sm" style="margin-top:1rem;">Buscar Produtos</a>
+        <div class="alert-card-meta">{{ alerta.data.strftime('%d/%m/%Y %H:%M') }}</div>
       </div>
+      <div class="alert-card-action">
+        <a href="{{ alerta.url_produto }}" target="_blank" class="btn btn-sm btn-primary"
+          >Ver loja</a
+        >
+      </div>
+    </div>
+    {% endfor %} {% else %}
+    <div class="pa-card" style="text-align: center; padding: 2.5rem 1rem">
+      <div style="font-size: 2rem; margin-bottom: 0.5rem">🔕</div>
+      <p style="color: var(--text-secondary); font-size: 0.875rem">
+        Nenhum alerta disparado ainda.<br />Cadastre produtos para começar.
+      </p>
+      <a href="{{ url_for('main.search') }}" class="btn btn-primary btn-sm" style="margin-top: 1rem"
+        >Buscar Produtos</a
+      >
+    </div>
     {% endif %}
   </div>
 
@@ -68,76 +79,115 @@
     </div>
 
     {% if historico %}
-      <div class="pa-table-wrap">
-        <table class="pa-table">
-          <thead>
-            <tr>
-              <th>Produto</th>
-              <th class="col-center">Preço</th>
-              <th class="col-center">Variação</th>
-              <th class="col-right">Horário</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for reg in historico %}
-            <tr>
-              <td class="col-primary" style="max-width:160px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ reg.produto_nome }}</td>
-              <td class="col-price col-center">R$ {{ "%.2f"|format(reg.preco) }}</td>
-              <td class="col-center">
-                {% if reg.variacao < 0 %}
-                  <span class="price-change down">↓ {{ "%.1f"|format(reg.variacao|abs) }}%</span>
-                {% elif reg.variacao > 0 %}
-                  <span class="price-change up">↑ {{ "%.1f"|format(reg.variacao) }}%</span>
-                {% else %}
-                  <span class="price-change flat">—</span>
-                {% endif %}
-              </td>
-              <td class="col-right" style="color:var(--text-muted); font-size:.78rem; white-space:nowrap;">{{ reg.data.strftime('%d/%m — %H:%M') }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+    <div class="pa-table-wrap">
+      <table class="pa-table">
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th class="col-center">Preço</th>
+            <th class="col-center">Variação</th>
+            <th class="col-right">Horário</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for reg in historico %}
+          <tr>
+            <td
+              class="col-primary"
+              style="
+                max-width: 160px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              "
+            >
+              {{ reg.produto_nome }}
+            </td>
+            <td class="col-price col-center">R$ {{ "%.2f"|format(reg.preco) }}</td>
+            <td class="col-center">
+              {% if reg.variacao < 0 %}
+              <span class="price-change down">↓ {{ "%.1f"|format(reg.variacao|abs) }}%</span>
+              {% elif reg.variacao > 0 %}
+              <span class="price-change up">↑ {{ "%.1f"|format(reg.variacao) }}%</span>
+              {% else %}
+              <span class="price-change flat">—</span>
+              {% endif %}
+            </td>
+            <td
+              class="col-right"
+              style="color: var(--text-muted); font-size: 0.78rem; white-space: nowrap"
+            >
+              {{ reg.data.strftime('%d/%m — %H:%M') }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
     {% else %}
-      <div class="pa-card" style="text-align:center; padding: 2.5rem 1rem;">
-        <div style="font-size:2rem; margin-bottom:.5rem;">📉</div>
-        <p style="color:var(--text-secondary); font-size:.875rem;">Sem variações registradas ainda.<br>O robô de monitoramento está ativo.</p>
-      </div>
+    <div class="pa-card" style="text-align: center; padding: 2.5rem 1rem">
+      <div style="font-size: 2rem; margin-bottom: 0.5rem">📉</div>
+      <p style="color: var(--text-secondary); font-size: 0.875rem">
+        Sem variações registradas ainda.<br />O robô de monitoramento está ativo.
+      </p>
+    </div>
     {% endif %}
   </div>
-
 </div>
 
 {% else %}
 
 <!-- Não logado: call to action -->
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
-
-  <div class="stat-card accent" style="text-align:center; padding:2rem;">
-    <div style="font-size:2.5rem; margin-bottom:.75rem;">🛒</div>
-    <h3 style="font-size:1rem; font-weight:700; color:var(--text-primary); margin-bottom:.5rem;">Todas as Lojas</h3>
-    <p style="font-size:.85rem; color:var(--text-secondary);">Um produto monitorado — todas as lojas do Google Shopping rastreadas automaticamente.</p>
+<div
+  style="
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  "
+>
+  <div class="stat-card accent" style="text-align: center; padding: 2rem">
+    <div style="font-size: 2.5rem; margin-bottom: 0.75rem">🛒</div>
+    <h3
+      style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem"
+    >
+      Todas as Lojas
+    </h3>
+    <p style="font-size: 0.85rem; color: var(--text-secondary)">
+      Um produto monitorado — todas as lojas do Google Shopping rastreadas automaticamente.
+    </p>
   </div>
 
-  <div class="stat-card success" style="text-align:center; padding:2rem;">
-    <div style="font-size:2.5rem; margin-bottom:.75rem;">🔔</div>
-    <h3 style="font-size:1rem; font-weight:700; color:var(--text-primary); margin-bottom:.5rem;">Alertas Inteligentes</h3>
-    <p style="font-size:.85rem; color:var(--text-secondary);">Defina seu preço alvo e receba notificações assim que a queda acontecer.</p>
+  <div class="stat-card success" style="text-align: center; padding: 2rem">
+    <div style="font-size: 2.5rem; margin-bottom: 0.75rem">🔔</div>
+    <h3
+      style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem"
+    >
+      Alertas Inteligentes
+    </h3>
+    <p style="font-size: 0.85rem; color: var(--text-secondary)">
+      Defina seu preço alvo e receba notificações assim que a queda acontecer.
+    </p>
   </div>
 
-  <div class="stat-card warning" style="text-align:center; padding:2rem;">
-    <div style="font-size:2.5rem; margin-bottom:.75rem;">📊</div>
-    <h3 style="font-size:1rem; font-weight:700; color:var(--text-primary); margin-bottom:.5rem;">Histórico Completo</h3>
-    <p style="font-size:.85rem; color:var(--text-secondary);">Acompanhe o histórico de preços e tome decisões de compra com dados reais.</p>
+  <div class="stat-card warning" style="text-align: center; padding: 2rem">
+    <div style="font-size: 2.5rem; margin-bottom: 0.75rem">📊</div>
+    <h3
+      style="font-size: 1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem"
+    >
+      Histórico Completo
+    </h3>
+    <p style="font-size: 0.85rem; color: var(--text-secondary)">
+      Acompanhe o histórico de preços e tome decisões de compra com dados reais.
+    </p>
   </div>
-
 </div>
 
-<div style="text-align:center; padding: 1rem 0 2rem;">
+<div style="text-align: center; padding: 1rem 0 2rem">
   <a href="{{ url_for('main.signup') }}" class="btn btn-primary btn-lg">Criar conta grátis →</a>
-  <a href="{{ url_for('main.login') }}" class="btn btn-ghost btn-lg" style="margin-left:.75rem;">Já tenho conta</a>
+  <a href="{{ url_for('main.login') }}" class="btn btn-ghost btn-lg" style="margin-left: 0.75rem"
+    >Já tenho conta</a
+  >
 </div>
 
-{% endif %}
-
-{% endblock %}
+{% endif %} {% endblock %}

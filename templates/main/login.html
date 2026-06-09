@@ -1,11 +1,7 @@
-{% extends 'main/base.html' %}
-{% block title %}Entrar{% endblock %}
-{% block meta_description %}Acesse sua conta no PriceAlert e gerencie seus alertas de preço.{% endblock %}
-
-{% block content %}
+{% extends 'main/base.html' %} {% block title %}Entrar{% endblock %} {% block meta_description
+%}Acesse sua conta no PriceAlert e gerencie seus alertas de preço.{% endblock %} {% block content %}
 <div class="auth-wrap">
   <div class="auth-box">
-
     <div class="auth-logo">
       <span class="icon">📈</span>
       <h1>PriceAlert</h1>
@@ -17,40 +13,41 @@
 
       <div class="pa-field">
         <label class="pa-label" for="email">{{ form.email.label.text }}</label>
-        {{ form.email(class="pa-input", id="email", placeholder="seu@email.com", autocomplete="email") }}
-        {% if form.email.errors %}
-          <div class="field-errors">
-            {% for e in form.email.errors %}
-              <span class="field-error">{{ e }}</span>
-            {% endfor %}
-          </div>
+        {{ form.email(class="pa-input", id="email", placeholder="seu@email.com",
+        autocomplete="email") }} {% if form.email.errors %}
+        <div class="field-errors">
+          {% for e in form.email.errors %}
+          <span class="field-error">{{ e }}</span>
+          {% endfor %}
+        </div>
         {% endif %}
       </div>
 
       <div class="pa-field">
         <label class="pa-label" for="senha">{{ form.senha.label.text }}</label>
-        {{ form.senha(class="pa-input", id="senha", placeholder="••••••••", autocomplete="current-password") }}
-        {% if form.senha.errors %}
-          <div class="field-errors">
-            {% for e in form.senha.errors %}
-              <span class="field-error">{{ e }}</span>
-            {% endfor %}
-          </div>
+        {{ form.senha(class="pa-input", id="senha", placeholder="••••••••",
+        autocomplete="current-password") }} {% if form.senha.errors %}
+        <div class="field-errors">
+          {% for e in form.senha.errors %}
+          <span class="field-error">{{ e }}</span>
+          {% endfor %}
+        </div>
         {% endif %}
       </div>
 
-      <div class="pa-field" style="margin-bottom: 0;">
+      <div class="pa-field" style="margin-bottom: 0">
         {{ form.submit(class="btn btn-primary btn-full btn-lg") }}
       </div>
     </form>
 
     <div class="auth-divider">ou</div>
 
-    <div style="text-align: center; font-size: .875rem; color: var(--text-secondary);">
+    <div style="text-align: center; font-size: 0.875rem; color: var(--text-secondary)">
       Não tem uma conta?
-      <a href="{{ url_for('main.signup') }}" style="font-weight:600; color:var(--accent);">Cadastre-se grátis</a>
+      <a href="{{ url_for('main.signup') }}" style="font-weight: 600; color: var(--accent)"
+        >Cadastre-se grátis</a
+      >
     </div>
-
   </div>
 </div>
 {% endblock %}
