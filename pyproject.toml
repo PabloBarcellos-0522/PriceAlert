@@ -16,7 +16,7 @@ requires-python = ">=3.9"
 license = {file = "LICENSE"}
 authors = [
     { name = "Pablo Barcellos", email = "pablobarcellossoares@gmail.com" },
-    { name = "Teo da Silva", email = "teosilva@gmail.com" }
+    { name = "Teo Giambarba", email = "teogrwork@gmail.com" }
 ]
 dependencies = [
     "Flask",
@@ -28,6 +28,7 @@ dependencies = [
     "psycopg[binary]",
     "serpapi",
     "Flask-Mail",
+    "apscheduler",
 ]
 
 

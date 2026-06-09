@@ -2,7 +2,7 @@ Metadata-Version: 2.4
 Name: PriceAlert
 Version: 0.1.0
 Summary: plataforma web que permite aos usuários monitorar preços de produtos em diferentes plataformas de e-commerce e receber notificações quando esses preços atingirem valores desejados
-Author-email: Pablo Barcellos <pablobarcellossoares@gmail.com>
+Author-email: Pablo Barcellos <pablobarcellossoares@gmail.com>, Teo Giambarba <teogrwork@gmail.com>
 License: MIT License
         
         Copyright (c) 2026 Pablo Barcellos Soares
@@ -35,6 +35,9 @@ Requires-Dist: email-validator
 Requires-Dist: flask-sqlalchemy
 Requires-Dist: flask-admin
 Requires-Dist: psycopg[binary]
+Requires-Dist: serpapi
+Requires-Dist: Flask-Mail
+Requires-Dist: apscheduler
 Provides-Extra: dev
 Requires-Dist: ipython; extra == "dev"
 Requires-Dist: flask-shell-ipython; extra == "dev"

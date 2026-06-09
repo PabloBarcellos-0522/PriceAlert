@@ -5,6 +5,9 @@ email-validator
 flask-sqlalchemy
 flask-admin
 psycopg[binary]
+serpapi
+Flask-Mail
+apscheduler
 
 [dev]
 ipython
