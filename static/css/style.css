@@ -1018,6 +1018,7 @@ img {
 .auth-logo {
   text-align: center;
   margin-bottom: 1.75rem;
+  justify-items: center;
 }
 .auth-logo .icon {
   font-size: 2.5rem;

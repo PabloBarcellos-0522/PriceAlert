@@ -73,7 +73,7 @@ def update_all_prices_and_notify():
 def update_single_product(product_id: int):
     """Atualiza preço de um produto específico"""
     try:
-        product = Product.query.get(product_id)
+        product = db.session.query(Product, product_id)
 
         if not product:
             current_app.logger.warning(f"Produto {product_id} não encontrado")

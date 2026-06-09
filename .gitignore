@@ -41,7 +41,6 @@ vendor/
 **/staticfiles/
 
 # Ignorar arquivos de testes
-**/tests/
 **/__tests__/
 *.spec.py
 *.test.py
