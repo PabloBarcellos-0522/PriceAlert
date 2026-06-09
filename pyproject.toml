@@ -15,7 +15,10 @@ readme = "README.md"
 requires-python = ">=3.9"
 license = {file = "LICENSE"}
 authors = [
-    {name = "Pablo Barcellos", email = "pablobarcellossoares@gmail.com"}, {name = "Teo da Silva", email = "teosilvagmail.com"}
+    authors = [
+    {name = "Pablo Barcellos", email = "pablobarcellossoares@gmail.com"}, 
+    {name = "Teo da Silva", email = "teosilva@gmail.com"}
+]
 ]
 dependencies = [
     "Flask",
