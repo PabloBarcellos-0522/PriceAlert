@@ -58,7 +58,7 @@ def test_user(db):
     from werkzeug.security import generate_password_hash
     user = User(
         name="Teste Usuário",
-        email="pablobarcellossoares@gmail.com",
+        email="usuario@teste.com",
         password=generate_password_hash("senha123")
     )
     _db.session.add(user)

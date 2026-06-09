@@ -20,8 +20,8 @@ def test_user_model(test_user):
     """Testa atributos e repr do modelo User."""
     assert test_user.id is not None
     assert test_user.name == "Teste Usuário"
-    assert test_user.email == "pablobarcellossoares@gmail.com"
-    assert "pablobarcellossoares@gmail.com" in repr(test_user)
+    assert test_user.email == "usuario@teste.com"
+    assert "usuario@teste.com" in repr(test_user)
     assert test_user.is_active is True
 
 
@@ -276,7 +276,7 @@ def test_email_service_send_welcome_email(app, test_user):
         assert len(outbox) == 1
         msg = outbox[0]
         assert msg.subject == "Bem-vindo ao PriceAlert! 🎉"
-        assert msg.recipients == ["pablobarcellossoares@gmail.com"]
+        assert msg.recipients == ["usuario@teste.com"]
         assert "Olá Teste Usuário" in msg.html
 
 
@@ -298,7 +298,7 @@ def test_email_service_send_notification_email(app, test_user, test_product):
         assert len(outbox) == 1
         msg = outbox[0]
         assert msg.subject == "Preço Alvo Atingido!"
-        assert msg.recipients == ["pablobarcellossoares@gmail.com"]
+        assert msg.recipients == ["usuario@teste.com"]
         assert "Celular Incrível" in msg.html
 
 
@@ -513,7 +513,7 @@ def test_login_logout_flow(client, test_user):
     # Login inválido
     response_invalid = client.post(
         "/login",
-        data={"email": "pablobarcellossoares@gmail.com",
+        data={"email": "usuario@teste.com",
               "senha": "senha_errada", "submit": "Entrar"},
         follow_redirects=True
     )
@@ -523,7 +523,7 @@ def test_login_logout_flow(client, test_user):
     # Login válido
     response_valid = client.post(
         "/login",
-        data={"email": "pablobarcellossoares@gmail.com",
+        data={"email": "usuario@teste.com",
               "senha": "senha123", "submit": "Entrar"},
         follow_redirects=True
     )
