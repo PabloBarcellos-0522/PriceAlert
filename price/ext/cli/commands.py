@@ -110,6 +110,7 @@ def init_app(app):
             rtx = Product(
                 google_product_id="g1",
                 title="RTX 4060",
+                str_current_price="R$ 2.857,27",
                 product_token="token_rtx",
                 product_shoping_link="https://shopping.google.com/rtx4060",
                 image="https://example.com/rtx-4060.jpg",
@@ -118,7 +119,7 @@ def init_app(app):
             ps5 = Product(
                 google_product_id="g2",
                 title="PS5 Slim",
-                brand="Sony",
+                str_current_price="R$ 1.614,15 agora",
                 product_token="token_ps5",
                 product_shoping_link="https://shopping.google.com/ps5",
                 image="https://example.com/ps5-slim.jpg",
@@ -127,7 +128,7 @@ def init_app(app):
             iphone = Product(
                 google_product_id="g3",
                 title="iPhone 13",
-                brand="Apple",
+                str_current_price="R$ 1.614,15 agora",
                 product_token="token_iphone",
                 product_shoping_link="https://shopping.google.com/iphone13",
                 image="https://example.com/iphone13.jpg",

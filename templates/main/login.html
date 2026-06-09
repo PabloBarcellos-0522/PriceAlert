@@ -1,71 +1,53 @@
-{% extends 'main/base.html' %}
-
-{% block title %}Login - Price Alert{% endblock %}
-
-{% block content %}
-<div class="columns is-centered is-vcentered" style="flex-grow: 1; margin-top: 2rem; margin-bottom: 2rem;">
-    <div class="column is-10-tablet is-6-desktop is-4-widescreen">
-        
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="notification is-{{ category }} mb-4" style="border-radius: 6px;">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <div class="box has-background-dark p-6" style="border-radius: 8px; border: 1px solid #2f3542; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
-            
-            <div class="has-text-centered mb-5">
-                <h1 class="title is-3 has-text-white mb-2">Entrar</h1>
-                <p class="subtitle is-6 has-text-grey-light">Acesse sua conta para gerenciar seus alertas</p>
-            </div>
-
-            <form method="POST" action="/login">
-                {{ form.csrf_token }}
-
-                <div class="field mb-4">
-                    <label class="label has-text-grey-light">{{ form.email.label }}</label>
-                    <div class="control">
-                        {{ form.email(class="input is-medium has-background-black has-text-white", style="border-color: #4a4a4a;", placeholder="seu@email.com") }}
-                    </div>
-                    {% if form.email.errors %}
-                        {% for error in form.email.errors %}
-                            <p class="help is-danger mt-1">{{ error }}</p>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-
-                <div class="field mb-5">
-                    <label class="label has-text-grey-light">{{ form.senha.label }}</label>
-                    <div class="control">
-                        {{ form.senha(class="input is-medium has-background-black has-text-white", style="border-color: #4a4a4a;", placeholder="••••••••") }}
-                    </div>
-                    {% if form.senha.errors %}
-                        {% for error in form.senha.errors %}
-                            <p class="help is-danger mt-1">{{ error }}</p>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-
-                <div class="field mt-5">
-                    <div class="control">
-                        {{ form.submit(class="button is-primary is-medium is-fullwidth has-text-weight-bold") }}
-                    </div>
-                </div>
-            </form>
-
-            <hr style="background-color: #2f3542; height: 1px; margin: 1.5rem 0;">
-            <div class="has-text-centered is-size-6">
-                <p class="has-text-grey-light">
-                    Não tem uma conta? 
-                    <a href="/login" class="has-text-primary has-text-weight-semibold" style="text-decoration: none;">Cadastre-se</a>
-                </p>
-            </div>
-
-        </div>
+{% extends 'main/base.html' %} {% block title %}Entrar{% endblock %} {% block meta_description
+%}Acesse sua conta no PriceAlert e gerencie seus alertas de preço.{% endblock %} {% block content %}
+<div class="auth-wrap">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <span class="icon">📈</span>
+      <h1>PriceAlert</h1>
+      <p>Bem-vindo de volta! Acesse sua conta.</p>
     </div>
+
+    <form method="POST" action="{{ url_for('main.login') }}" novalidate>
+      {{ form.csrf_token }}
+
+      <div class="pa-field">
+        <label class="pa-label" for="email">{{ form.email.label.text }}</label>
+        {{ form.email(class="pa-input", id="email", placeholder="seu@email.com",
+        autocomplete="email") }} {% if form.email.errors %}
+        <div class="field-errors">
+          {% for e in form.email.errors %}
+          <span class="field-error">{{ e }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="pa-field">
+        <label class="pa-label" for="senha">{{ form.senha.label.text }}</label>
+        {{ form.senha(class="pa-input", id="senha", placeholder="••••••••",
+        autocomplete="current-password") }} {% if form.senha.errors %}
+        <div class="field-errors">
+          {% for e in form.senha.errors %}
+          <span class="field-error">{{ e }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="pa-field" style="margin-bottom: 0">
+        {{ form.submit(class="btn btn-primary btn-full btn-lg") }}
+      </div>
+    </form>
+
+    <div class="auth-divider">ou</div>
+
+    <div style="text-align: center; font-size: 0.875rem; color: var(--text-secondary)">
+      Não tem uma conta?
+      <a href="{{ url_for('main.signup') }}" style="font-weight: 600; color: var(--accent)"
+        >Cadastre-se grátis</a
+      >
+    </div>
+  </div>
 </div>
 {% endblock %}
