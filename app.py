@@ -71,4 +71,10 @@ def create_app(test_config=None):
     from price.services import init_services
     init_services(app)
 
+# ----------------------------------------------------------
+    # Background Tasks / Scanner Semanal Isolado
+    # ----------------------------------------------------------
+    from price.tasks import init_tasks
+    init_tasks(app)
+
     return app
