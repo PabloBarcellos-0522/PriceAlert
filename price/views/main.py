@@ -250,6 +250,8 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             flash("Conta criada com sucesso! Faça seu login.", "success")
+
+            current_app.email_service.send_welcome_email(new_user)
             return redirect(url_for("main.login"))
         except Exception as e:
             db.session.rollback()
@@ -286,6 +288,8 @@ def adicionar_monitoramento():
         flash("Produto não encontrado.", "danger")
         return redirect(url_for("main.search"))
 
+    current_app.price_scanner_service.update_single_product(product_id)
+
     desired_price = None
     if desired_price_raw:
         try:
@@ -300,6 +304,7 @@ def adicionar_monitoramento():
             product=product,
             desired_price=desired_price
         )
+
         flash(
             f"Produto '{product.title}' adicionado aos monitoramentos!", "success")
     except Exception as e:

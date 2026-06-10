@@ -4,6 +4,7 @@ from price.services.email_service import EmailService
 from price.services.monitoring_service import MonitoringService
 from price.services.product_service import SerpapiProductService
 from price.services.serpapi_service import SerpApiService
+from price.services.pricescanner_service import PriceScannerService
 
 
 def init_services(app: Flask) -> None:
@@ -15,5 +16,6 @@ def init_services(app: Flask) -> None:
     app.serpapi_service = SerpApiService(serpapi_key)
     app.product_service = SerpapiProductService()
     app.monitoring_service = MonitoringService()
+    app.price_scanner_service = PriceScannerService()
 
     app.logger.info("Serviços registrados com sucesso")

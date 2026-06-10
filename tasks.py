@@ -128,6 +128,24 @@ def drop_db(c):
     load_env("dev")
     c.run("flask drop-db")
 
+
+@task
+def prod_create_db(c):
+    """
+    Executa o comando de create_db
+    """
+    load_env("prod")
+    c.run("flask create-db")
+
+
+@task
+def prod_drop_db(c):
+    """
+    Executa o comando de drop_db garantindo o ambiente de desenvolvimento.
+    """
+    load_env("prod")
+    c.run("flask drop-db")
+
 # ==========================================================
 # EMPACOTAMENTO
 # ==========================================================
