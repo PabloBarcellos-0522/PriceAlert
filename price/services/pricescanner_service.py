@@ -78,7 +78,7 @@ class PriceScannerService:
     def update_single_product(self, product_id: int):
         """Atualiza preço de um produto específico"""
         try:
-            product = Product.query.get(product_id)
+            product = db.session.get(Product, product_id)
 
             if not product:
                 current_app.logger.warning(

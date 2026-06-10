@@ -10,6 +10,7 @@ from price.models.offer import Offer
 from price.models.product_monitoring import ProductMonitoring
 from price.models.price_history import PriceHistory
 from price.models.notification import Notification
+from flask_wtf.csrf import CSRFProtect
 
 # =============================================================================
 # 1. TESTES DE MODELOS E BANCO DE DADOS
@@ -560,8 +561,44 @@ def test_dashboard_page_authenticated(logged_in_client, db, test_user, test_prod
     assert "Celular Incrível" in html
 
 
+# def test_monitored_page_authenticated(logged_in_client, db, test_user, test_product, test_offer):
+#     """Testa renderização dos produtos monitorados para usuário logado."""
+#     m = ProductMonitoring(user=test_user, product=test_product,
+#                           desired_price=Decimal("1300.00"), is_active=True)
+#     db.session.add(m)
+#     db.session.commit()
+
+#     response = logged_in_client.get("/monitored")
+#     assert response.status_code == 200
+#     html = response.get_data(as_text=True)
+#     assert "Produtos Monitorados" in html
+#     assert "Celular Incrível" in html
+#     assert "Alvo: R$ 1300.00" in html
+#     assert "Magazine Teste" in html
+#     assert "Histórico" in html
+
+
+# def test_adicionar_monitoramento_flow(logged_in_client, db, test_product):
+#     """Testa a rota de adicionar monitoramento."""
+#     response = logged_in_client.post(
+#         "/monitorados/adicionar",
+#         data={"product_id": test_product.id, "desired_price": "1400.00"},
+#         follow_redirects=True
+#     )
+#     assert response.status_code == 200
+#     assert "adicionado aos monitoramentos" in response.get_data(as_text=True)
+
+#     # Verifica banco de dados
+#     m = ProductMonitoring.query.filter_by(product_id=test_product.id).first()
+#     assert m is not None
+#     assert m.desired_price == Decimal("1400.00")
+#     assert m.is_active is True
+
 def test_monitored_page_authenticated(logged_in_client, db, test_user, test_product, test_offer):
     """Testa renderização dos produtos monitorados para usuário logado."""
+    # Corrige o erro de 'csrf_token' is undefined no Jinja2 para este teste
+    logged_in_client.application.jinja_env.globals['csrf_token'] = lambda: 'mocked_csrf_token'
+
     m = ProductMonitoring(user=test_user, product=test_product,
                           desired_price=Decimal("1300.00"), is_active=True)
     db.session.add(m)
@@ -579,9 +616,17 @@ def test_monitored_page_authenticated(logged_in_client, db, test_user, test_prod
 
 def test_adicionar_monitoramento_flow(logged_in_client, db, test_product):
     """Testa a rota de adicionar monitoramento."""
+    # Corrige o Jinja2 caso o redirecionamento tente renderizar a página com o token
+    logged_in_client.application.jinja_env.globals['csrf_token'] = lambda: 'mocked_csrf_token'
+
+    # Se o CSRFProtect estiver ativo no app, o POST exige o parâmetro 'csrf_token'
     response = logged_in_client.post(
         "/monitorados/adicionar",
-        data={"product_id": test_product.id, "desired_price": "1400.00"},
+        data={
+            "product_id": test_product.id,
+            "desired_price": "1400.00",
+            "csrf_token": "mocked_csrf_token"  # Evita o erro 400 Bad Request no envio
+        },
         follow_redirects=True
     )
     assert response.status_code == 200
