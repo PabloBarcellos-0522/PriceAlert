@@ -275,7 +275,7 @@ def adicionar_monitoramento():
         return redirect(url_for("main.login"))
 
     user_id = session["user_id"]
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
     if not user:
         session.clear()
         return redirect(url_for("main.login"))
@@ -283,10 +283,12 @@ def adicionar_monitoramento():
     product_id = request.form.get("product_id")
     desired_price_raw = request.form.get("desired_price")
 
-    product = Product.query.get(product_id)
+    product = db.session.get(Product, product_id)
     if not product:
         flash("Produto não encontrado.", "danger")
         return redirect(url_for("main.search"))
+
+    current_app.price_scanner_service.update_single_product(product_id)
 
     desired_price = None
     if desired_price_raw:
@@ -302,7 +304,7 @@ def adicionar_monitoramento():
             product=product,
             desired_price=desired_price
         )
-        current_app.price_scanner_service.update_single_product(product_id)
+
         flash(
             f"Produto '{product.title}' adicionado aos monitoramentos!", "success")
     except Exception as e:
@@ -318,7 +320,7 @@ def remover_monitoramento(id):
         flash("Acesso não autorizado.", "warning")
         return redirect(url_for("main.login"))
 
-    monitoring = ProductMonitoring.query.get(id)
+    monitoring = db.session.get(ProductMonitoring, id)
     if not monitoring or monitoring.user_id != session["user_id"]:
         flash("Monitoramento não encontrado.", "danger")
         return redirect(url_for("main.monitored"))

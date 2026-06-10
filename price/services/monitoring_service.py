@@ -123,17 +123,15 @@ class MonitoringService:
 
     def _get_lowest_historical_price(self, offer: Offer) -> Decimal:
         """Obtém o menor preço já registrado para uma oferta"""
-        # Incluir o preço atual
-        prices = [offer.current_price]
-
-        # Incluir histórico
+        # Obter apenas o histórico
         history = PriceHistory.query.filter_by(
             offer_id=offer.id
-        ).order_by(PriceHistory.captured_at.asc()).all()
+        ).all()
 
-        prices.extend([h.price for h in history])
+        if history:
+            return min([h.price for h in history])
 
-        return min(prices) if prices else offer.current_price
+        return offer.current_price
 
     def _create_notification(
         self,
