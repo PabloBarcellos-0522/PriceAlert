@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask import Flask
 
+
 def run_weekly_price_scanner(app: Flask):
     """
     Lógica isolada de escaneamento semanal.
@@ -8,8 +9,9 @@ def run_weekly_price_scanner(app: Flask):
     """
     # Abre o contexto do app para permitir o uso do banco e dos serviços na thread secundária
     with app.app_context():
-        app.logger.info("📅 [Scanner Semanal] Iniciando verificação de rotina...")
-        
+        app.logger.info(
+            "[Scanner Semanal] Iniciando verificação de rotina...")
+
         # Imports tardios dentro do contexto para evitar erros de importação circular
         from price.ext.db import db
         from price.models.product import Product
@@ -23,10 +25,12 @@ def run_weekly_price_scanner(app: Flask):
 
             total_products = len(products_to_scan)
             if not products_to_scan:
-                app.logger.info("📅 [Scanner Semanal] Nenhum produto ativo para escanear.")
+                app.logger.info(
+                    "[Scanner Semanal] Nenhum produto ativo para escanear.")
                 return
 
-            app.logger.info(f"🔄 [Scanner Semanal] Atualizando {total_products} produtos via SerpAPI...")
+            app.logger.info(
+                f"[Scanner Semanal] Atualizando {total_products} produtos via SerpAPI...")
 
             calls_made = 0
             for product in products_to_scan:
@@ -40,25 +44,31 @@ def run_weekly_price_scanner(app: Flask):
                         product.updated_at = datetime.utcnow()
                         calls_made += 1
                     else:
-                        app.logger.warning(f"⚠️ [Scanner Semanal] Produto ID {product.id} não possui product_token.")
+                        app.logger.warning(
+                            f"[Scanner Semanal] Produto ID {product.id} não possui product_token.")
                 except Exception as e:
-                    app.logger.error(f"❌ [Scanner Semanal] Erro ao atualizar produto {product.id}: {str(e)}")
+                    app.logger.error(
+                        f"[Scanner Semanal] Erro ao atualizar produto {product.id}: {str(e)}")
 
             # Commita todas as atualizações de preço e datas de uma só vez
             db.session.commit()
-            app.logger.info(f"✅ [Scanner Semanal] {calls_made}/{total_products} consultas realizadas.")
+            app.logger.info(
+                f"[Scanner Semanal] {calls_made}/{total_products} consultas realizadas.")
 
             # Dispara o processamento de notificações com base nos novos preços
             notifications = app.monitoring_service.check_all_active_monitorings()
-            app.logger.info(f"📬 [Scanner Semanal] {len(notifications)} notificações geradas.")
+            app.logger.info(
+                f"📬 [Scanner Semanal] {len(notifications)} notificações geradas.")
 
             # Envia os e-mails para os usuários em lote
             if notifications:
-                results = app.email_service.send_notifications_batch(notifications)
+                results = app.email_service.send_notifications_batch(
+                    notifications)
                 app.logger.info(
-                    f"📧 [Scanner Semanal] Emails enviados: {results.get('sent', 0)}, Falhas: {results.get('failed', 0)}"
+                    f"[Scanner Semanal] Emails enviados: {results.get('sent', 0)}, Falhas: {results.get('failed', 0)}"
                 )
 
         except Exception as e:
             db.session.rollback()
-            app.logger.error(f"💥 [Scanner Semanal] Falha crítica na rotina: {str(e)}")
+            app.logger.error(
+                f"[Scanner Semanal] Falha crítica na rotina: {str(e)}")

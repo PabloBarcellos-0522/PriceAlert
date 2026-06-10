@@ -9,7 +9,7 @@ from price.models.price_history import PriceHistory
 
 class SerpapiProductService:
 
-    def search(self, query: str, fetch_offers: bool = False, max_details: int = 10):
+    def search(self, query: str, fetch_offers: bool = False, max_details: int = 0):
         """Busca produtos no Google Shopping e opcionalmente busca detalhes/offers.
 
         - fetch_offers: se True, chama `get_product_details` para até `max_details` produtos.

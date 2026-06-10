@@ -16,6 +16,6 @@ def init_services(app: Flask) -> None:
     app.serpapi_service = SerpApiService(serpapi_key)
     app.product_service = SerpapiProductService()
     app.monitoring_service = MonitoringService()
-    app.price_scanner_service = PriceScannerService(app)
+    app.price_scanner_service = PriceScannerService()
 
     app.logger.info("Serviços registrados com sucesso")

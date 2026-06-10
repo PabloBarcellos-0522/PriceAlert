@@ -56,8 +56,9 @@ def create_app(test_config=None):
         from price.ext.wtf import init_wtf
         init_wtf(app)
 
-    from price.ext.debugtoolbar import init_toolbar
-    init_toolbar(app)
+    if app.debug or app.config.get("DEBUG"):
+        from price.ext.debugtoolbar import init_toolbar
+        init_toolbar(app)
 
     # ----------------------------------------------------------
     # Blueprints (camada de apresentacao)

@@ -1,25 +1,24 @@
 from datetime import datetime
-from flask import Flask
+from flask import Flask, current_app
+from price.ext.db import db
+from price.models.product import Product
+from price.models.product_monitoring import ProductMonitoring
+
 
 class PriceScannerService:
     """
     Serviço encapsulado em classe responsável por gerenciar a varredura 
     semanal rígida de preços focado na economia de chamadas de API.
     """
-    def __init__(self, app: Flask):
-        self.app = app
 
     def scan_all_active_prices(self) -> None:
         """
         Executa a varredura semanal apenas nos produtos monitorados ativamente,
         gera notificações e envia e-mails em lote.
         """
-        with self.app.app_context():
-            self.app.logger.info("📅 [PriceScannerService] Iniciando varredura semanal de rotina...")
-            
-            from price.ext.db import db
-            from price.models.product import Product
-            from price.models.product_monitoring import ProductMonitoring
+        with current_app.app_context():
+            current_app.logger.info(
+                "[PriceScannerService] Iniciando varredura semanal de rotina...")
 
             try:
                 # Query otimizada: busca apenas produtos com monitoramentos ativos
@@ -29,42 +28,73 @@ class PriceScannerService:
 
                 total_products = len(products_to_scan)
                 if not products_to_scan:
-                    self.app.logger.info("📅 [PriceScannerService] Nenhum produto ativo encontrado para escanear.")
+                    current_app.logger.warning(
+                        "[PriceScannerService] Nenhum produto ativo encontrado para escanear.")
                     return
 
-                self.app.logger.info(f"🔄 [PriceScannerService] Atualizando {total_products} produtos via SerpAPI...")
+                current_app.logger.info(
+                    f"[PriceScannerService] Atualizando {total_products} produtos via SerpAPI...")
 
                 calls_made = 0
                 for product in products_to_scan:
                     try:
                         if product.product_token:
                             # Utiliza os serviços atrelados ao app de forma limpa
-                            self.app.product_service.get_product_details(
+                            current_app.product_service.get_product_details(
                                 page_token=product.product_token,
                                 commit=False
                             )
-                            product.updated_at = datetime.utcnow()
                             calls_made += 1
                         else:
-                            self.app.logger.warning(f"⚠️ [PriceScannerService] Produto ID {product.id} não possui product_token.")
+                            current_app.logger.warning(
+                                f"[PriceScannerService] Produto ID {product.id} não possui product_token.")
                     except Exception as e:
-                        self.app.logger.error(f"❌ [PriceScannerService] Erro ao atualizar produto {product.id}: {str(e)}")
+                        current_app.logger.error(
+                            f"[PriceScannerService] Erro ao atualizar produto {product.id}: {str(e)}")
 
                 # Salva todas as alterações no banco de uma só vez
                 db.session.commit()
-                self.app.logger.info(f"✅ [PriceScannerService] {calls_made}/{total_products} consultas realizadas.")
+                current_app.logger.info(
+                    f"[PriceScannerService] {calls_made}/{total_products} consultas realizadas.")
 
                 # Verifica regras de preço e gera notificações
-                notifications = self.app.monitoring_service.check_all_active_monitorings()
-                self.app.logger.info(f"📬 [PriceScannerService] {len(notifications)} notificações geradas.")
+                notifications = current_app.monitoring_service.check_all_active_monitorings()
+                current_app.logger.info(
+                    f"[PriceScannerService] {len(notifications)} notificações geradas.")
 
                 # Dispara os e-mails em bloco
                 if notifications:
-                    results = self.app.email_service.send_notifications_batch(notifications)
-                    self.app.logger.info(
-                        f"📧 [PriceScannerService] Emails enviados: {results.get('sent', 0)}, Falhas: {results.get('failed', 0)}"
+                    results = current_app.email_service.send_notifications_batch(
+                        notifications)
+                    current_app.logger.info(
+                        f"[PriceScannerService] Emails enviados: {results.get('sent', 0)}, Falhas: {results.get('failed', 0)}"
                     )
 
             except Exception as e:
                 db.session.rollback()
-                self.app.logger.error(f"💥 [PriceScannerService] Falha crítica na rotina de escaneamento: {str(e)}")
+                current_app.logger.error(
+                    f"[PriceScannerService] Falha crítica na rotina de escaneamento: {str(e)}")
+
+    def update_single_product(self, product_id: int):
+        """Atualiza preço de um produto específico"""
+        try:
+            product = Product.query.get(product_id)
+
+            if not product:
+                current_app.logger.warning(
+                    f"[PriceScannerService] Produto {product_id} não encontrado para escanear.")
+                return {"success": False, "error": "Produto não encontrado"}
+
+            current_app.product_service.get_product_details(
+                page_token=product.product_token, commit=False)
+            db.session.commit()
+
+            current_app.logger.info(
+                f"[PriceScannerService] Produto {product.title} atualizado.")
+            return {"success": True, "product_id": product_id}
+
+        except Exception as e:
+            db.session.rollback()
+            current_app.logger.error(
+                f"[PriceScannerService] Falha crítica na rotina de escaneamento: {str(e)}")
+            return {"success": False, "error": str(e)}

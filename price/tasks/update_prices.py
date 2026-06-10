@@ -42,7 +42,7 @@ def update_all_prices_and_notify():
                 current_app.logger.error(
                     f"Erro ao atualizar produto {product.id}: {str(e)}")
 
-        current_app.logger.info(f"✅ {updated_count} produtos atualizados")
+        current_app.logger.info(f"{updated_count} produtos atualizados")
 
         # 2. Verifica monitoramentos e cria notificações
         notifications = current_app.monitoring_service.check_all_active_monitorings()
@@ -63,7 +63,7 @@ def update_all_prices_and_notify():
         }
 
     except Exception as e:
-        current_app.logger.error(f"❌ Erro na tarefa de atualização: {str(e)}")
+        current_app.logger.error(f"Erro na tarefa de atualização: {str(e)}")
         return {
             "success": False,
             "error": str(e)
@@ -81,7 +81,7 @@ def update_single_product(product_id: int):
 
         current_app.product_service.update_product_offers(product)
 
-        current_app.logger.info(f"✅ Produto {product.title} atualizado")
+        current_app.logger.info(f"Produto {product.title} atualizado")
         return {"success": True, "product_id": product_id}
 
     except Exception as e:
@@ -101,7 +101,7 @@ def check_and_notify_all():
             results = current_app.email_service.send_notifications_batch(
                 notifications)
             current_app.logger.info(
-                f"📧 Emails enviados: {results['sent']}, Falhas: {results['failed']}")
+                f"Emails enviados: {results['sent']}, Falhas: {results['failed']}")
             return results
 
         return {"total": 0, "sent": 0, "failed": 0}
@@ -126,7 +126,7 @@ def cleanup_old_notifications(days: int = 30):
         db.session.commit()
 
         current_app.logger.info(
-            f"🗑️  {deleted_count} notificações antigas removidas")
+            f"{deleted_count} notificações antigas removidas")
         return {"success": True, "deleted": deleted_count}
 
     except Exception as e:
