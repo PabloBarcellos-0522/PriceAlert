@@ -250,6 +250,8 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             flash("Conta criada com sucesso! Faça seu login.", "success")
+
+            current_app.email_service.send_welcome_email(new_user)
             return redirect(url_for("main.login"))
         except Exception as e:
             db.session.rollback()
