@@ -1,4 +1,4 @@
-from typing import List, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING
 from datetime import datetime
 from sqlalchemy import func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -31,34 +31,34 @@ class Product(db.Model):
         index=True
     )
 
-    str_current_price: Mapped[str] = mapped_column(
+    str_current_price: Mapped[Optional[str]] = mapped_column(
         db.String(50),
-        nullable=False
+        nullable=True
     )
 
-    rating: Mapped[float] = mapped_column(
+    rating: Mapped[Optional[float]] = mapped_column(
         db.Integer,
         nullable=True
     )
 
-    review_count: Mapped[int] = mapped_column(
+    review_count: Mapped[Optional[int]] = mapped_column(
         db.Integer,
         nullable=True
     )
 
-    product_token: Mapped[str] = mapped_column(
+    product_token: Mapped[Optional[str]] = mapped_column(
         db.Text,
-        nullable=False
+        nullable=True
     )
 
-    product_shoping_link: Mapped[str] = mapped_column(
+    product_shoping_link: Mapped[Optional[str]] = mapped_column(
         db.Text,
-        nullable=False
+        nullable=True
     )
 
-    image: Mapped[str] = mapped_column(
+    image: Mapped[Optional[str]] = mapped_column(
         db.Text,
-        nullable=False
+        nullable=True
     )
 
     created_at: Mapped[datetime] = mapped_column(
@@ -97,7 +97,7 @@ class Product(db.Model):
 
     @property
     def imagem_url(self) -> str:
-        return self.image
+        return self.image or ""
 
     @property
     def preco_atual(self) -> float:

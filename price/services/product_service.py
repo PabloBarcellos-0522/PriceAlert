@@ -1,3 +1,4 @@
+from datetime import datetime, UTC
 from decimal import Decimal
 from flask import current_app
 from typing import Optional
@@ -107,6 +108,8 @@ class SerpapiProductService:
             )
             db.session.add(product)
             db.session.flush()
+        else:
+            product.updated_at = datetime.now(UTC)
 
         processed_offers = []
 

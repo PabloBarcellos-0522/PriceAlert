@@ -41,7 +41,6 @@ def run_weekly_price_scanner(app: Flask):
                             page_token=product.product_token,
                             commit=False  # Segura o commit para enviar em lote no final
                         )
-                        product.updated_at = datetime.utcnow()
                         calls_made += 1
                     else:
                         app.logger.warning(
