@@ -27,7 +27,9 @@ automáticos.{% endblock %} {% block content %}
 
 {% if usuario_logado %}
 
-<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem">
+<div
+  style="display: grid; grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); gap: 1.5rem"
+>
   <!-- Alertas Recebidos -->
   <div>
     <div class="section-header">

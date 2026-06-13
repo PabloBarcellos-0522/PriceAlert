@@ -10,7 +10,8 @@
         Price<span>Alert</span>
       </a>
 
-      <div class="pa-nav-links">
+      <button class="pa-menu-toggle" id="pa-menu-toggle" aria-label="Abrir menu">☰</button>
+      <div class="pa-nav-links" id="pa-nav-links">
         <a
           href="{{ url_for('main.index') }}"
           class="pa-nav-link {% if request.endpoint == 'main.index' %}active{% endif %}"
@@ -45,7 +46,6 @@
         </div>
 
         {% if usuario_logado %}
-        <a href="{{ url_for('main.monitored') }}" class="btn btn-ghost btn-sm">Alertas</a>
         <form action="{{ url_for('main.logout') }}" method="GET" style="display: inline">
           <button type="submit" class="btn btn-ghost btn-sm">Sair</button>
         </form>
@@ -61,29 +61,39 @@
 <script>
   (function () {
     const html = document.documentElement;
-    const btn = document.getElementById("theme-toggle-btn");
-    const icon = document.getElementById("theme-icon");
+    const themeBtn = document.getElementById("theme-toggle-btn");
+    const themeIcon = document.getElementById("theme-icon");
+    const menuToggleBtn = document.getElementById("pa-menu-toggle");
+    const navLinks = document.getElementById("pa-nav-links");
 
     function applyTheme(theme) {
       if (theme === "light") {
         html.setAttribute("data-theme", "light");
-        if (icon) icon.textContent = "☀️";
+        if (themeIcon) themeIcon.textContent = "☀️";
       } else {
         html.removeAttribute("data-theme");
-        if (icon) icon.textContent = "🌙";
+        if (themeIcon) themeIcon.textContent = "🌙";
       }
     }
 
     // Apply saved theme immediately (avoids flash)
-    const saved = localStorage.getItem("pa-theme") || "dark";
-    applyTheme(saved);
+    const savedTheme = localStorage.getItem("pa-theme") || "dark";
+    applyTheme(savedTheme);
 
-    if (btn) {
-      btn.addEventListener("click", function () {
+    if (themeBtn) {
+      themeBtn.addEventListener("click", function () {
         const current = html.getAttribute("data-theme") === "light" ? "light" : "dark";
         const next = current === "dark" ? "light" : "dark";
         localStorage.setItem("pa-theme", next);
         applyTheme(next);
+      });
+    }
+
+    if (menuToggleBtn) {
+      menuToggleBtn.addEventListener("click", function () {
+        if (navLinks) {
+          navLinks.classList.toggle("is-active");
+        }
       });
     }
   })();

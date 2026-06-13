@@ -171,6 +171,50 @@ img {
   gap: 0.25rem;
 }
 
+.pa-menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .pa-nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 64px; /* Adjust based on navbar height */
+    left: 0;
+    width: 100%;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0;
+    box-shadow: var(--shadow-md);
+  }
+
+  .pa-nav-links.is-active {
+    display: flex;
+  }
+
+  .pa-nav-link {
+    width: 100%;
+    padding: 0.8rem 1.5rem;
+    border-radius: 0;
+    text-align: center;
+  }
+
+  .pa-menu-toggle {
+    display: block;
+  }
+
+  .pa-navbar .inner {
+    justify-content: space-between;
+  }
+}
+
 .pa-nav-link {
   color: var(--text-secondary);
   padding: 0.45rem 0.85rem;
@@ -1092,9 +1136,6 @@ img {
   }
   .pa-brand {
     font-size: 1rem;
-  }
-  .pa-nav-links {
-    display: none;
   }
 
   .hero-search {
