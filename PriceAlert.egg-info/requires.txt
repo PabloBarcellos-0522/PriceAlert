@@ -1,5 +1,6 @@
 Flask
 dotenv
+python-dotenv
 flask-wtf
 email-validator
 flask-sqlalchemy
