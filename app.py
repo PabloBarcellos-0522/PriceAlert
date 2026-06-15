@@ -72,7 +72,16 @@ def create_app(test_config=None):
     from price.services import init_services
     init_services(app)
 
-# ----------------------------------------------------------
+    # ----------------------------------------------------------
+    # Flask-Admin (painel de gerenciamento em /admin)
+    # Só disponível em desenvolvimento para segurança
+    # ----------------------------------------------------------
+    if (not app.config.get("TESTING") and
+            app.config.get("APP_ENV") == "development"):
+        from price.ext.admin import init_admin
+        init_admin(app)
+
+    # ----------------------------------------------------------
     # Background Tasks / Scanner Semanal Isolado
     # ----------------------------------------------------------
     from price.tasks import init_tasks

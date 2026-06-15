@@ -1,0 +1,85 @@
+{% extends 'admin/master.html' %} {% block body %}
+<div class="container" style="margin-top: 30px">
+  <h1>Painel Administrativo — PriceAlert</h1>
+  <p class="lead">Gerencie usuários, produtos, ofertas e monitoramentos.</p>
+
+  <hr />
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card text-white bg-primary mb-3">
+        <div class="card-header">Usuários</div>
+        <div class="card-body">
+          <h2 class="card-title">{{ stats.total_usuarios }}</h2>
+          <p class="card-text">Total de usuários cadastrados</p>
+          <a href="/admin/user/" class="btn btn-light">Gerenciar</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card text-white bg-success mb-3">
+        <div class="card-header">Produtos</div>
+        <div class="card-body">
+          <h2 class="card-title">{{ stats.total_produtos }}</h2>
+          <p class="card-text">Produtos no catálogo</p>
+          <a href="/admin/product/" class="btn btn-light">Gerenciar</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card text-white bg-info mb-3">
+        <div class="card-header">Ofertas</div>
+        <div class="card-body">
+          <h2 class="card-title">{{ stats.total_ofertas }}</h2>
+          <p class="card-text">Ofertas de lojas</p>
+          <a href="/admin/offer/" class="btn btn-light">Gerenciar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card text-white bg-warning mb-3">
+        <div class="card-header">Histórico de Preços</div>
+        <div class="card-body">
+          <h2 class="card-title">{{ stats.total_historico }}</h2>
+          <p class="card-text">Registros de variação de preços</p>
+          <a href="/admin/pricehistory/" class="btn btn-light">Visualizar</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card text-white bg-danger mb-3">
+        <div class="card-header">Monitoramentos</div>
+        <div class="card-body">
+          <h2 class="card-title">{{ stats.total_monitoramentos }}</h2>
+          <p class="card-text">Produtos sendo monitorados</p>
+          <a href="/admin/productmonitoring/" class="btn btn-light">Gerenciar</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card text-white bg-secondary mb-3">
+        <div class="card-header">Notificações</div>
+        <div class="card-body">
+          <h2 class="card-title">{{ stats.total_notificacoes }}</h2>
+          <p class="card-text">Alertas enviados aos usuários</p>
+          <a href="/admin/notification/" class="btn btn-light">Visualizar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="alert alert-info">
+    <strong>Atenção:</strong> O painel admin permite criar, editar e excluir dados diretamente. Use
+    com cuidado!
+  </div>
+</div>
+{% endblock %}
