@@ -16,6 +16,7 @@ flask-shell-ipython
 black
 flake8
 flask-debugtoolbar>=0.15
+invoke
 
 [test]
 pytest>=8.3

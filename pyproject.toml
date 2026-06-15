@@ -45,6 +45,7 @@ dev = [
     "black",
     "flake8",
     "flask-debugtoolbar >= 0.15",
+    "invoke"
 ]
 
 
